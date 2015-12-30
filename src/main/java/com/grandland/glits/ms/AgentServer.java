@@ -1,17 +1,17 @@
 package com.grandland.glits.ms;
 
-import com.grandland.glits.ms.protocol.HeartbeatProtocol;
-import org.apache.avro.ipc.NettyServer;
-import org.apache.avro.ipc.Server;
-import org.apache.avro.ipc.specific.SpecificResponder;
+import com.grandland.glits.ms.protocol.HeartbeatService;
+import com.grandland.glits.ms.service.HeartbeatServiceImpl;
+import org.apache.thrift.server.TServer;
+import org.apache.thrift.server.TThreadPoolServer;
+import org.apache.thrift.transport.TServerSocket;
+import org.apache.thrift.transport.TServerTransport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.net.InetSocketAddress;
 
 /**
  * AgentServer
@@ -25,21 +25,35 @@ public class AgentServer {
 
     private static final Logger LOG = LoggerFactory.getLogger(AgentServer.class);
 
-    private static Server heartbeatServer;
+    private static final int HEARTBEAT_PORT = 9090;
+
+    private TServer server;
 
     @Autowired
-    private HeartbeatProtocol heartbeatProtocol;
+    private HeartbeatServiceImpl heartbeatService;
 
     @PostConstruct
     public void start() {
-        heartbeatServer = new NettyServer(new SpecificResponder(HeartbeatProtocol.class, heartbeatProtocol), new InetSocketAddress(8888));
-        heartbeatServer.start();
-        LOG.info("Agent heartbeat Server start...");
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try{
+                    HeartbeatService.Processor processor = new HeartbeatService.Processor(heartbeatService);
+                    TServerTransport serverTransport = new TServerSocket(HEARTBEAT_PORT);
+                    server = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));
+                    LOG.info("Agent heartbeat Server start...");
+                    server.serve();
+                }catch (Exception e){
+                    LOG.error(e.getMessage(),e);
+                }
+            }
+        }).start();
     }
 
     @PreDestroy
     public void stop() {
-        heartbeatServer.close();
+        server.stop();
         LOG.info("Agent heartbeat Server stop...");
     }
 
