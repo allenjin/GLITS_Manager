@@ -1,5 +1,8 @@
 package com.grandland.glits.ms.domain;
 
+import com.grandland.glits.ms.store.HeartbeatStore;
+import com.grandland.glits.ms.store.HostHeartbeat;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
@@ -13,7 +16,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "gl_hosts", indexes = {
-    @Index(name = "IDX_HOST_NAME", columnList = "host_name")
+        @Index(name = "IDX_HOST_NAME", columnList = "host_name")
 })
 public class GlHost {
 
@@ -39,10 +42,19 @@ public class GlHost {
     @JoinColumn(name = "rack_id", referencedColumnName = "id")
     private GlRack rack;    //所属机架
 
-    @ManyToMany(mappedBy = "hosts", cascade = {CascadeType.PERSIST}, fetch= FetchType.EAGER)
+    @ManyToMany(mappedBy = "hosts", cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
     private Set<GlRole> roles;
 
-    public enum HostStatus{
+    public GlHost() {
+    }
+
+    public GlHost(String hostName, String ipAddress, Date lastUpdate) {
+        this.hostName = hostName;
+        this.ipAddress = ipAddress;
+        this.lastUpdate = lastUpdate;
+    }
+
+    public enum HostStatus {
         NORMAL,     //正常[绿]
         OFFLINE,    //离线[灰]
         WARNING,    //警告[黄]
@@ -111,6 +123,14 @@ public class GlHost {
 
     public void setRoles(Set roles) {
         this.roles = roles;
+    }
+
+    public HostHeartbeat getHeartbeat() {
+        return HeartbeatStore.getInstance().getHostHeatbeat(this.hostName);
+    }
+
+    public void setHeartbeat(HostHeartbeat heartbeat) {
+        HeartbeatStore.getInstance().setHostHeartbeat(this, heartbeat);
     }
 
     @Override

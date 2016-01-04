@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
@@ -38,14 +39,14 @@ public class AgentServer {
 
             @Override
             public void run() {
-                try{
+                try {
                     HeartbeatService.Processor processor = new HeartbeatService.Processor(heartbeatService);
                     TServerTransport serverTransport = new TServerSocket(HEARTBEAT_PORT);
                     server = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));
                     LOG.info("Agent heartbeat Server start...");
                     server.serve();
-                }catch (Exception e){
-                    LOG.error(e.getMessage(),e);
+                } catch (Exception e) {
+                    LOG.error(e.getMessage(), e);
                 }
             }
         }).start();

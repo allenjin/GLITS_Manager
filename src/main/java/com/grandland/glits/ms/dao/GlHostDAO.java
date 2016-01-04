@@ -12,5 +12,7 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface GlHostDAO extends JpaRepository<GlHost, Integer>{
+public interface GlHostDAO extends JpaRepository<GlHost, Integer> {
+
+    GlHost findByHostName(String hostName);
 }
