@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 public class AgentConfig {
 
     @Value("${agent.heartbeatInterval}")
-    private long heartbeatInterval; //心跳间隔,单位[秒]
+    private int heartbeatInterval; //心跳间隔,单位[秒]
 
     @Value("${agent.cpuThreshold}")
     private double cpuThreshold;    //CPU报警瓶颈
@@ -23,9 +23,9 @@ public class AgentConfig {
     private double memThreshold;    //内存报警瓶颈
 
     @Value("${agent.metricInterval}")
-    private long metricInterval;    //采集间隔,单位[秒]
+    private int metricInterval;    //采集间隔,单位[秒]
 
-    public long getHeartbeatInterval() {
+    public int getHeartbeatInterval() {
         return heartbeatInterval;
     }
 
@@ -37,7 +37,7 @@ public class AgentConfig {
         return memThreshold;
     }
 
-    public long getMetricInterval() {
+    public int getMetricInterval() {
         return metricInterval;
     }
 }

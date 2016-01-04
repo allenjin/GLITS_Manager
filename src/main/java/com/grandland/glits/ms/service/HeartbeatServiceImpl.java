@@ -6,6 +6,7 @@ import com.grandland.glits.ms.domain.GlHost;
 import com.grandland.glits.ms.protocol.HeartbeatRequest;
 import com.grandland.glits.ms.protocol.HeartbeatResponse;
 import com.grandland.glits.ms.protocol.HeartbeatService;
+import com.grandland.glits.ms.protocol.Process;
 import com.grandland.glits.ms.store.HostHeartbeat;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * HeartbeatServiceImpl
@@ -37,10 +40,10 @@ public class HeartbeatServiceImpl implements HeartbeatService.Iface {
     public HeartbeatResponse heartbeat(HeartbeatRequest request) throws TException {
         LOG.debug("Heartbeat Server receive heartbeat = {}", request.toString());
         GlHost host = updateHostHeartbeat(request);
-        return buildResponse(request);
+        return buildResponse(host, request);
     }
 
-    public GlHost updateHostHeartbeat(HeartbeatRequest request) {
+    private GlHost updateHostHeartbeat(HeartbeatRequest request) {
         GlHost host = glHostDAO.findByHostName(request.getHost_name());
         if (host == null) {
             host = glHostDAO.save(
@@ -54,10 +57,10 @@ public class HeartbeatServiceImpl implements HeartbeatService.Iface {
             hb = new HostHeartbeat();
         }
         hb.setVersion(request.getVersion());
-        hb.setCpuUsage(request.getTotal_cpu());
+        hb.setCpuUsage(request.getCpu_usage());
         hb.setHostName(request.getHost_name());
         hb.setLastSeen(new Date());
-        hb.setMemUsage(request.getMemory_usage());
+        hb.setMemUsage(request.getMem_usage());
         hb.setMountAvailSpace(request.getMounted_avail_space());
 
         host.setHeartbeat(hb);
@@ -65,11 +68,19 @@ public class HeartbeatServiceImpl implements HeartbeatService.Iface {
         return host;
     }
 
-    public HeartbeatResponse buildResponse(HeartbeatRequest request) {
+    private HeartbeatResponse buildResponse(GlHost host, HeartbeatRequest request) {
         HeartbeatResponse response = new HeartbeatResponse();
         response.setHeartbeat_interval(agentConfig.getHeartbeatInterval());
+        response.setMetric_interval(agentConfig.getMetricInterval());
         response.setHost_name(request.getHost_name());
+        response.setProcesses(buildProcess(host));
         return response;
+    }
+
+    private List<Process> buildProcess(GlHost host){
+        List processList = new LinkedList();
+
+        return processList;
     }
 
 }

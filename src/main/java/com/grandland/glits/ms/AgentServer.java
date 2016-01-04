@@ -1,7 +1,9 @@
 package com.grandland.glits.ms;
 
 import com.grandland.glits.ms.protocol.HeartbeatService;
+import com.grandland.glits.ms.protocol.MetricService;
 import com.grandland.glits.ms.service.HeartbeatServiceImpl;
+import com.grandland.glits.ms.service.MetricServiceImpl;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TThreadPoolServer;
 import org.apache.thrift.transport.TServerSocket;
@@ -28,13 +30,24 @@ public class AgentServer {
 
     private static final int HEARTBEAT_PORT = 9090;
 
-    private TServer server;
+    private static final int METRIC_PORT = 9191;
+
+    private TServer heartbeatServer;
+
+    private TServer metricServer;
 
     @Autowired
     private HeartbeatServiceImpl heartbeatService;
 
-    @PostConstruct
-    public void start() {
+    @Autowired
+    private MetricServiceImpl metricService;
+
+    public void start(){
+        runHeartbeatServer();
+        runMetricServer();
+    }
+
+    public void runHeartbeatServer() {
         new Thread(new Runnable() {
 
             @Override
@@ -42,9 +55,9 @@ public class AgentServer {
                 try {
                     HeartbeatService.Processor processor = new HeartbeatService.Processor(heartbeatService);
                     TServerTransport serverTransport = new TServerSocket(HEARTBEAT_PORT);
-                    server = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));
+                    heartbeatServer = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));
                     LOG.info("Agent heartbeat Server start...");
-                    server.serve();
+                    heartbeatServer.serve();
                 } catch (Exception e) {
                     LOG.error(e.getMessage(), e);
                 }
@@ -52,10 +65,29 @@ public class AgentServer {
         }).start();
     }
 
-    @PreDestroy
+    public void runMetricServer() {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    MetricService.Processor processor = new MetricService.Processor(metricService);
+                    TServerTransport serverTransport = new TServerSocket(METRIC_PORT);
+                    metricServer = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));
+                    LOG.info("Agent metric Server start...");
+                    metricServer.serve();
+                } catch (Exception e) {
+                    LOG.error(e.getMessage(), e);
+                }
+            }
+        }).start();
+    }
+
     public void stop() {
-        server.stop();
+        heartbeatServer.stop();
         LOG.info("Agent heartbeat Server stop...");
+        metricServer.stop();
+        LOG.info("Agent metric Server stop...");
     }
 
 }
