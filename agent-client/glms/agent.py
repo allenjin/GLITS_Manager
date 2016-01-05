@@ -10,13 +10,13 @@ import socket
 import logging
 import logging.handlers
 
-sys.path.append('./gen-py')
 from protocol.heartbeat import HeartbeatService
-from protocol.heartbeat.ttypes import HeartbeatRequest, HeartbeatResponse
+from protocol.heartbeat.ttypes import HeartbeatRequest, HeartbeatResponse, Process, ProcessStatus
 from thrift import Thrift
 from thrift.transport import TSocket
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
+from monitor import MonitorDaemon
 
 LOG = logging.getLogger(__name__)
 
@@ -24,6 +24,7 @@ DEFAULT_HEARTBEAT_INTERVAL_SECONDS = 5.0
 DEFAULT_AGENT_TIMEOUT = 30.0
 AGENT_SERVER_HOST = "localhost"
 AGENT_SERVER_PORT = 9090
+METRIC_SERVER_PORT = 9191
 
 AGENT_LOG_MODE = "DEBUG"
 LOG_FORMAT = "%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s"
@@ -41,6 +42,8 @@ class Agent(object):
         self.started = False
         self.hostname = socket.gethostname()
         self.ip_address = socket.gethostbyname(self.hostname)
+        self.monitor_daemon = None
+
     def configure(self):
         pid = os.getpid()
         if pid == os.getpgid(pid):
@@ -54,7 +57,7 @@ class Agent(object):
         signal.signal(signal.SIGTERM, self.ready_exit_on_signal)
 
     def prepare_heartbeat_request(self):
-        cpu_usage = psutil.cpu_percent(interval=1)
+        cpu_usage = psutil.cpu_percent(interval=None)
         phymem = psutil.virtual_memory()
         memory_usage = phymem.percent
         processes = []
@@ -72,7 +75,9 @@ class Agent(object):
 
     def handle_heartbeat_response(self, response):
         self.heartbeat_interval = response.heartbeat_interval
-        print response
+        if self.agent_timeout is not response.metric_interval:
+            self.agent_timeout = response.metric_interval
+            self.monitor_daemon.set_timeout(self.agent_timeout)
 
     def send_heartbeat(self, request):
         transport = TSocket.TSocket(AGENT_SERVER_HOST, AGENT_SERVER_PORT)
@@ -90,6 +95,10 @@ class Agent(object):
     def start(self):
         self.started = True
 
+        self.monitor_daemon = MonitorDaemon(self.hostname, AGENT_SERVER_HOST, METRIC_SERVER_PORT, self)
+        self.monitor_daemon.set_timeout(self.agent_timeout)
+        self.monitor_daemon.start()
+
         #main loop for sending heartbeat
         should_heartbeat = True
         while not self.should_exit:
@@ -99,9 +108,8 @@ class Agent(object):
                 response = self.send_heartbeat(request)
                 self.handle_heartbeat_response(response)
             except Thrift.TException, tx:
-                print tx.message
+                LOG.exception("Caught unexpected exception {%s} in main loop while sending heartbeat", tx.message)
                 break
-                LOG.exception("Caught unexpected exception in main loop")
 
             diff = time.time() - last
             if diff < self.heartbeat_interval:
@@ -130,6 +138,12 @@ def get_logging_level():
 def initial_logging():
     logging.basicConfig(level=get_logging_level(),
         format=LOG_FORMAT, datefmt=LOG_DATE_FORMAT,filename=LOG_FILE_NAME)
+    # output logs to console
+    console = logging.StreamHandler()
+    console.setLevel(get_logging_level())
+    formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+    console.setFormatter(formatter)
+    logging.getLogger('').addHandler(console)
 
 def main():
     agent = Agent()

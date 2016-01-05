@@ -42,7 +42,7 @@ public class AgentServer {
     @Autowired
     private MetricServiceImpl metricService;
 
-    public void start(){
+    public void start() {
         runHeartbeatServer();
         runMetricServer();
     }
@@ -57,9 +57,13 @@ public class AgentServer {
                     TServerTransport serverTransport = new TServerSocket(HEARTBEAT_PORT);
                     heartbeatServer = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));
                     LOG.info("Agent heartbeat Server start...");
+
                     heartbeatServer.serve();
                 } catch (Exception e) {
                     LOG.error(e.getMessage(), e);
+                    if (heartbeatServer != null) {
+                        stopHeartbeatServer();
+                    }
                 }
             }
         }).start();
@@ -78,16 +82,24 @@ public class AgentServer {
                     metricServer.serve();
                 } catch (Exception e) {
                     LOG.error(e.getMessage(), e);
+                    if (metricServer != null) {
+                        stopMetricServer();
+                    }
                 }
             }
         }).start();
     }
 
-    public void stop() {
+    public void stopHeartbeatServer() {
         heartbeatServer.stop();
-        LOG.info("Agent heartbeat Server stop...");
+        heartbeatServer = null;
+        LOG.info("Heartbeat Server stop");
+    }
+
+    public void stopMetricServer() {
         metricServer.stop();
-        LOG.info("Agent metric Server stop...");
+        metricServer = null;
+        LOG.info("Metric Server stop");
     }
 
 }
