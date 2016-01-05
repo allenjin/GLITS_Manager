@@ -32,3 +32,4 @@ gen
 .DS_Store
 
 agent-client/glits-ms-agent.log
+agent-client/**.pyc
