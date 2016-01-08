@@ -4,6 +4,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Map;
+
 /**
  * HomeController
  *
@@ -18,6 +20,12 @@ public class HomeController {
     @ResponseBody
     public String hello(){
         return "hello";
+    }
+
+    @RequestMapping("/")
+    public String index(Map<String, Object> model){
+        model.put("msg", "test jsp");
+        return "index";
     }
 
 }

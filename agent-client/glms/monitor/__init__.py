@@ -69,8 +69,8 @@ class MonitorDaemon(object):
         uptime = time.time() - psutil.boot_time()
         self._add_metric(metrics, schema.UP_TIME, uptime, MTYPES.TYPE_DOUBLE)
 
-        local_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-        self._add_metric(metrics, schema.SYSTEM_DATE, local_time, MTYPES.TYPE_STRING)
+        # local_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+        self._add_metric(metrics, schema.SYSTEM_DATE, time.time(), MTYPES.TYPE_LONG)
 
         self._add_metric(metrics, schema.CPU_PERCENT, psutil.cpu_percent(interval=None), MTYPES.TYPE_DOUBLE)
 
@@ -124,7 +124,7 @@ class MonitorDaemon(object):
             self._add_metric(metrics, schema.CAPACITY, disk_usage.total, MTYPES.TYPE_LONG)
             self._add_metric(metrics, schema.CAPACITY_USED, disk_usage.used, MTYPES.TYPE_LONG)
             self._add_metric(metrics, schema.CAPACITY_FREE, disk_usage.free, MTYPES.TYPE_LONG)
-            fs_updates.append(FsUpdate(partition.mountpoint, partition.device,metrics))
+            fs_updates.append(FsUpdate(partition.mountpoint, partition.device, metrics))
         return fs_updates
 
     def _add_metric(self, list, key, val, type):

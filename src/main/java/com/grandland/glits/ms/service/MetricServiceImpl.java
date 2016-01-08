@@ -18,10 +18,16 @@ import java.util.List;
 
 @Service
 public class MetricServiceImpl implements MetricService.Iface {
-    private static  final Logger LOG = LoggerFactory.getLogger(MetricServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MetricServiceImpl.class);
 
     @Override
     public void sendMetricMessage(List<MetricMessage> messages) throws TException {
-        LOG.debug(messages.toString());
+
+//        LOG.debug(messages.toString());
+
+        for (MetricMessage message : messages) {
+            LOG.debug(message.toString());
+        }
+
     }
 }
