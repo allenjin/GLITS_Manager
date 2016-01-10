@@ -48,7 +48,8 @@ dependencies {
 
             "mysql:mysql-connector-java:5.1.38",
 
-            "net.schmizz:sshj:0.10.0"
+            "net.schmizz:sshj:0.10.0",
+            'org.json:json:20151123'
 
     )
     providedRuntime (

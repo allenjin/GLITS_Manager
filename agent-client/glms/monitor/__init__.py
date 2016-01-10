@@ -69,8 +69,8 @@ class MonitorDaemon(object):
         uptime = time.time() - psutil.boot_time()
         self._add_metric(metrics, schema.UP_TIME, uptime, MTYPES.TYPE_DOUBLE)
 
-        # local_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-        self._add_metric(metrics, schema.SYSTEM_DATE, time.time(), MTYPES.TYPE_LONG)
+        local_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+        self._add_metric(metrics, schema.SYSTEM_DATE, local_time, MTYPES.TYPE_STRING)
 
         self._add_metric(metrics, schema.CPU_PERCENT, psutil.cpu_percent(interval=None), MTYPES.TYPE_DOUBLE)
 
@@ -110,7 +110,7 @@ class MonitorDaemon(object):
             # self._add_metric(metrics, schema.ERR_OUT, iface.errout, MTYPES.TYPE_LONG)
             # self._add_metric(metrics, schema.DROP_IN, iface.dropin, MTYPES.TYPE_LONG)
             # self._add_metric(metrics, schema.DROP_OUT, iface.dropout, MTYPES.TYPE_LONG)
-            self._add_metric(metrics, schema.IP_ADDRESS, address, MTYPES.TYPE_LONG)
+            self._add_metric(metrics, schema.IP_ADDRESS, address, MTYPES.TYPE_STRING)
             net_updates.append(NetUpdate(iface_name, metrics))
 
         return net_updates

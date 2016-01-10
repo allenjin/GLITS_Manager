@@ -6,17 +6,10 @@ package com.grandland.glits.ms.metric.common;
  * @author Allen Jin
  * @date 2016/01/06
  */
-public enum MetricType {
-    STRING(0), INT(1), LONG(2), DOUBLE(3);
+public class MetricType {
 
-    private int code;
-
-    MetricType(int code) {
-        this.code = code;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
+    public static final byte STRING = 0;
+    public static final byte INT = 1;
+    public static final byte LONG = 2;
+    public static final byte DOUBLE = 3;
 }

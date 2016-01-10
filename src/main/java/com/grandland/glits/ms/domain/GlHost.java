@@ -15,9 +15,7 @@ import java.util.Set;
  */
 
 @Entity
-@Table(name = "gl_hosts", indexes = {
-        @Index(name = "IDX_HOST_NAME", columnList = "host_name")
-})
+@Table(name = "gl_hosts")
 public class GlHost {
 
     @Id
