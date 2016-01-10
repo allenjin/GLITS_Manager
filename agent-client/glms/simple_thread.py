@@ -23,6 +23,7 @@ class SimpleThread(threading.Thread):
                 self._fn(*self._args, **self._kwargs)
             except Exception, _:
                 LOG.exception("Exception in thread '%s'" % (self.getName(),))
+
             diff = time.time() - start
             if diff < wait_time:
                 time.sleep(max(0, wait_time - diff))

@@ -36,6 +36,8 @@ class Agent(object):
     def __init__(self):
         initial_logging()
         self.identifier = "agent-%d-%d" % (os.getpid(), long(time.time()))
+        self.heartbeat_retry_factor = 60
+        self.heartbeat_retry_times = 0
         self.agent_version = 1
         self.heartbeat_interval = DEFAULT_HEARTBEAT_INTERVAL_SECONDS
         self.agent_timeout = DEFAULT_AGENT_TIMEOUT
@@ -106,10 +108,15 @@ class Agent(object):
             try:
                 request = self.prepare_heartbeat_request()
                 response = self.send_heartbeat(request)
+                #if send heartbeat success, reset retry time to zero
+                self.heartbeat_retry_times = 0
                 self.handle_heartbeat_response(response)
             except Thrift.TException, tx:
                 LOG.exception("Caught unexpected exception {%s} in main loop while sending heartbeat", tx.message)
-                break
+                retry_sleep_time = self.heartbeat_retry_times * self.heartbeat_retry_factor
+                LOG.exception("will retry to send heartbeat, sleep time={%s}", retry_sleep_time)
+                self.heartbeat_retry_times += 1
+                time.sleep(retry_sleep_time)
 
             diff = time.time() - last
             if diff < self.heartbeat_interval:

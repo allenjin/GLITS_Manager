@@ -35,6 +35,7 @@ public class MetricInfo {
     private String data;
 
     @Column(name = "update_time")
+    //@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     public MetricInfo(){}

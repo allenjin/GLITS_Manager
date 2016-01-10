@@ -28,15 +28,22 @@ class MonitorDaemon(object):
         self._metric_port = port
         self._message_fail_cache = []
         self._message_cache_max_nums = 50
+        self.retry_factor = 60
+        self.retry_times = 0
 
     def _report(self):
         messages = self._prepare_messages()
         try:
             self._send_message(messages)
             # if send message success, we clear cached messages
+            self.retry_times = 0
             self._message_fail_cache = []
         except Thrift.TException, tx:
             LOG.exception("Caught unexpected exception {%s} in main loop while sending metric messages.", tx.message)
+            sleep_time = self.retry_factor * self.retry_times
+            LOG.exception("will retry to send metric message, sleep_time={%s}", sleep_time)
+            self.retry_times += 1
+            time.sleep(sleep_time)
 
     def _send_message(self, messages):
         transport = TSocket.TSocket(self._metric_host, self._metric_port)
@@ -104,12 +111,12 @@ class MonitorDaemon(object):
             metrics = []
             self._add_metric(metrics, schema.BYTES_SENT, iface.bytes_sent, MTYPES.TYPE_LONG)
             self._add_metric(metrics, schema.BYTES_RECV, iface.bytes_recv, MTYPES.TYPE_LONG)
-            # self._add_metric(metrics, schema.PACKETS_SENT, iface.bytes_sent, MTYPES.TYPE_LONG)
-            # self._add_metric(metrics, schema.PACKETS_RECV, iface.bytes_sent, MTYPES.TYPE_LONG)
-            # self._add_metric(metrics, schema.ERR_IN, iface.errin, MTYPES.TYPE_LONG)
-            # self._add_metric(metrics, schema.ERR_OUT, iface.errout, MTYPES.TYPE_LONG)
-            # self._add_metric(metrics, schema.DROP_IN, iface.dropin, MTYPES.TYPE_LONG)
-            # self._add_metric(metrics, schema.DROP_OUT, iface.dropout, MTYPES.TYPE_LONG)
+            self._add_metric(metrics, schema.PACKETS_SENT, iface.bytes_sent, MTYPES.TYPE_LONG)
+            self._add_metric(metrics, schema.PACKETS_RECV, iface.bytes_sent, MTYPES.TYPE_LONG)
+            self._add_metric(metrics, schema.ERR_IN, iface.errin, MTYPES.TYPE_LONG)
+            self._add_metric(metrics, schema.ERR_OUT, iface.errout, MTYPES.TYPE_LONG)
+            self._add_metric(metrics, schema.DROP_IN, iface.dropin, MTYPES.TYPE_LONG)
+            self._add_metric(metrics, schema.DROP_OUT, iface.dropout, MTYPES.TYPE_LONG)
             self._add_metric(metrics, schema.IP_ADDRESS, address, MTYPES.TYPE_STRING)
             net_updates.append(NetUpdate(iface_name, metrics))
 
