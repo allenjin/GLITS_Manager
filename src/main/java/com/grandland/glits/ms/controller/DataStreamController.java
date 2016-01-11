@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @date 2016/01/11
  */
 @Controller
-@RequestMapping("data-stream")
+@RequestMapping("/data-stream")
 public class DataStreamController {
 
     @RequestMapping("/")

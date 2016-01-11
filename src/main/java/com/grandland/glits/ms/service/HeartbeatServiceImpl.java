@@ -36,6 +36,9 @@ public class HeartbeatServiceImpl implements HeartbeatService.Iface {
     @Autowired
     private AgentConfig agentConfig;
 
+    @Autowired
+    private HostStatManager hostStatManager;
+
     @Override
     public HeartbeatResponse heartbeat(HeartbeatRequest request) throws TException {
         LOG.debug("Heartbeat Server receive heartbeat = {}", request.toString());
@@ -50,6 +53,7 @@ public class HeartbeatServiceImpl implements HeartbeatService.Iface {
                     new GlHost(request.getHost_name(),
                             request.getIp_address(),
                             new Date()));
+            hostStatManager.addHost(host);
             LOG.info("Can't find host in database, will create host[{}]", host);
         }
         HostHeartbeat hb = host.getHeartbeat();

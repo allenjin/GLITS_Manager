@@ -1,5 +1,6 @@
 package com.grandland.glits.ms.metric.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grandland.glits.ms.json.MetricInfoRecord;
 import com.grandland.glits.ms.metric.common.MetricGrading;
@@ -34,7 +35,7 @@ public class MetricInfoService {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    private List<MetricInfoRecord> query(String hostName, MonitoringType type, int size) {
+    public List<MetricInfoRecord> query(String hostName, MonitoringType type, int size) {
         PageRequest request = new PageRequest(0, size);
         Page<MetricInfo> page = metricInfoDAO.findByHostNameAndTypeAndGrading(hostName, type, MetricGrading.MINUTE, request);
         List records = new LinkedList();
@@ -49,6 +50,18 @@ public class MetricInfoService {
             }
         }
         return records;
+    }
+
+    public String MetricInfoJson(String hostName, MonitoringType type, int size){
+        String json = "";
+
+        List<MetricInfoRecord> metricInfos = query(hostName, type, size);
+        try {
+           json =  objectMapper.writeValueAsString(metricInfos);
+        } catch (JsonProcessingException e) {
+            LOG.error("metric info convert to json error:{}", e.getMessage());
+        }
+        return json;
     }
 
 }

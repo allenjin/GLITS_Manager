@@ -16,16 +16,9 @@ import java.util.Map;
 @Controller
 public class HomeController {
 
-    @RequestMapping("/hello")
-    @ResponseBody
-    public String hello(){
-        return "hello";
-    }
-
     @RequestMapping("/")
     public String index(Map<String, Object> model){
-        model.put("msg", "test jsp");
-        return "index";
+        return "redirect:/physical/";
     }
 
 }

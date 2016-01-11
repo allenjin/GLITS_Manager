@@ -1,5 +1,6 @@
 package com.grandland.glits.ms.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grandland.glits.ms.store.HeartbeatStore;
 import com.grandland.glits.ms.store.HostHeartbeat;
 
@@ -36,10 +37,12 @@ public class GlHost {
     @Enumerated(value = EnumType.STRING)
     private HostStatus status = HostStatus.NORMAL;  //机器状态
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "rack_id", referencedColumnName = "id")
     private GlRack rack;    //所属机架
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "hosts", cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
     private Set<GlRole> roles;
 
