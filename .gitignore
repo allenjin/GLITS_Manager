@@ -19,9 +19,6 @@ gradle-app.setting
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
 
-### Example user template template
-### Example user template
-
 # IntelliJ project files
 .idea
 *.iml
@@ -31,5 +28,12 @@ gen
 
 .DS_Store
 
+### python
 agent-client/glits-ms-agent.log
-agent-client/**.pyc
+agent-client/**.
+
+
+### front-end static
+node_modules
+src/main/webapp/static/**
+

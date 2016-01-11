@@ -22,6 +22,11 @@ public class PhysicalController {
     @Autowired
     private MetricInfoService metricInfoService;
 
+    @RequestMapping("/")
+    public String index(){
+        return "physical/racks";
+    }
+
     @RequestMapping("/{hostName}")
     public String hostPhysicalView(@PathVariable("hostName") String hostName, Map<String, Object> model){
         model.put("hostname", hostName);
