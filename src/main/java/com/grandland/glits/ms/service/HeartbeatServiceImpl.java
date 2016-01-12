@@ -43,6 +43,7 @@ public class HeartbeatServiceImpl implements HeartbeatService.Iface {
     public HeartbeatResponse heartbeat(HeartbeatRequest request) throws TException {
         LOG.debug("Heartbeat Server receive heartbeat = {}", request.toString());
         GlHost host = updateHostHeartbeat(request);
+
         return buildResponse(host, request);
     }
 

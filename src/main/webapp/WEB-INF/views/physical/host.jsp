@@ -96,19 +96,36 @@
             var times = [];
             var series = [];
             var ifaces = [];
+            var ips = [];
             $.each(dataArray, function(i, netInfo){
                times.push(dateFormat(netInfo.time));
-                console.log(netInfo.data);
                 $.each(netInfo.data, function(j, iface){
-                    if(!ifaces[iface]){
-                        ifaces[iface] = [];
+                    if(!ifaces[iface.iface]){
+                        ifaces[iface.iface] = [];
+                        ips.push(iface.ip);
                     }
-                    ifaces[iface].push();
+                    ifaces[iface.iface].push({b_in:iface.bytes_recv, b_out: iface.bytes_sent});
                 });
             });
+            var index = 0;
+            for(var iface in ifaces){
+                var b_ins = [];
+                var b_outs = [];
+                var ip = ips[index ++];
+                $.each(ifaces[iface], function(i, obj){
+                    var kb_in = (obj.b_in / 1024).toFixed(2);
+                    var kb_out = (obj.b_out / 1024).toFixed(2);
+                    b_ins.push(Number(kb_in));
+                    b_outs.push(Number(kb_out));
+                });
+                series.push({name: iface + "-in", ip: ip, data: b_ins});
+                series.push({name: iface + "-out", ip: ip, data: b_outs});
+            }
             var id = "netChart";
             var netPanel = metricPanelBuild("网络信息", chartContainer(id));
             $('#rightCol').append(netPanel);
+            var options = {type: "NET"};
+            highChartBuilder($('#' + id), "line", times, series, "网络使用情况", "流量(Kb/s)", options);
         }
 
         function metricPanelBuild(title, content){

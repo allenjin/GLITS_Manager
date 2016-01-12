@@ -1,6 +1,7 @@
 package com.grandland.glits.ms.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -11,33 +12,30 @@ import org.springframework.context.annotation.Configuration;
  */
 
 @Configuration
+@ConfigurationProperties(prefix = "agent", locations = "classpath:config/monitor.yml")
 public class AgentConfig {
 
-    @Value("${agent.heartbeatInterval}")
-    private int heartbeatInterval; //心跳间隔,单位[秒]
+    private int heartbeatInterval = 30; //心跳间隔,单位[秒]
 
-    @Value("${agent.cpuThreshold}")
-    private double cpuThreshold;    //CPU报警瓶颈
+    private int metricInterval = 60;    //采集间隔,单位[秒]
 
-    @Value("${agent.memThreshold}")
-    private double memThreshold;    //内存报警瓶颈
+    private int heartbeatServerPort = 9090; //心跳监听端口
 
-    @Value("${agent.metricInterval}")
-    private int metricInterval;    //采集间隔,单位[秒]
+    private int metricServerPort = 9191;    //采集监听端口
 
     public int getHeartbeatInterval() {
         return heartbeatInterval;
     }
 
-    public double getCpuThreshold() {
-        return cpuThreshold;
-    }
-
-    public double getMemThreshold() {
-        return memThreshold;
-    }
-
     public int getMetricInterval() {
         return metricInterval;
+    }
+
+    public int getHeartbeatServerPort() {
+        return heartbeatServerPort;
+    }
+
+    public int getMetricServerPort() {
+        return metricServerPort;
     }
 }

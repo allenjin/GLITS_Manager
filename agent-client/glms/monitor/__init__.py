@@ -100,23 +100,44 @@ class MonitorDaemon(object):
 
         return metrics
 
+    # def _collect_net_updates(self):
+    #     net_updates = []
+    #     net_infos = psutil.net_io_counters(pernic=True)
+    #     net_addrs = psutil.net_if_addrs()
+    #
+    #     for iface_name in net_addrs:
+    #         iface = net_infos[iface_name]
+    #         address = net_addrs[iface_name][0].address
+    #         metrics = []
+    #         self._add_metric(metrics, schema.BYTES_SENT, iface.bytes_sent, MTYPES.TYPE_LONG)
+    #         self._add_metric(metrics, schema.BYTES_RECV, iface.bytes_recv, MTYPES.TYPE_LONG)
+    #         self._add_metric(metrics, schema.PACKETS_SENT, iface.packets_sent, MTYPES.TYPE_LONG)
+    #         self._add_metric(metrics, schema.PACKETS_RECV, iface.packets_recv, MTYPES.TYPE_LONG)
+    #         self._add_metric(metrics, schema.ERR_IN, iface.errin, MTYPES.TYPE_LONG)
+    #         self._add_metric(metrics, schema.ERR_OUT, iface.errout, MTYPES.TYPE_LONG)
+    #         self._add_metric(metrics, schema.DROP_IN, iface.dropin, MTYPES.TYPE_LONG)
+    #         self._add_metric(metrics, schema.DROP_OUT, iface.dropout, MTYPES.TYPE_LONG)
+    #         self._add_metric(metrics, schema.IP_ADDRESS, address, MTYPES.TYPE_STRING)
+    #         net_updates.append(NetUpdate(iface_name, metrics))
+    #
+    #     return net_updates
+
     def _collect_net_updates(self):
         net_updates = []
-        net_infos = psutil.net_io_counters(pernic=True)
         net_addrs = psutil.net_if_addrs()
+        interval = 1.0
+        pnic_before = psutil.net_io_counters(pernic=True)
+        time.sleep(interval)
+        pnic_after = psutil.net_io_counters(pernic=True)
         for iface_name in net_addrs:
-
-            iface = net_infos[iface_name]
+            stats_before = pnic_before[iface_name]
+            stats_after = pnic_after[iface_name]
             address = net_addrs[iface_name][0].address
             metrics = []
-            self._add_metric(metrics, schema.BYTES_SENT, iface.bytes_sent, MTYPES.TYPE_LONG)
-            self._add_metric(metrics, schema.BYTES_RECV, iface.bytes_recv, MTYPES.TYPE_LONG)
-            self._add_metric(metrics, schema.PACKETS_SENT, iface.bytes_sent, MTYPES.TYPE_LONG)
-            self._add_metric(metrics, schema.PACKETS_RECV, iface.bytes_sent, MTYPES.TYPE_LONG)
-            self._add_metric(metrics, schema.ERR_IN, iface.errin, MTYPES.TYPE_LONG)
-            self._add_metric(metrics, schema.ERR_OUT, iface.errout, MTYPES.TYPE_LONG)
-            self._add_metric(metrics, schema.DROP_IN, iface.dropin, MTYPES.TYPE_LONG)
-            self._add_metric(metrics, schema.DROP_OUT, iface.dropout, MTYPES.TYPE_LONG)
+            self._add_metric(metrics, schema.BYTES_SENT, stats_after.bytes_sent - stats_before.bytes_sent, MTYPES.TYPE_LONG)
+            self._add_metric(metrics, schema.BYTES_RECV, stats_after.bytes_recv - stats_before.bytes_recv, MTYPES.TYPE_LONG)
+            self._add_metric(metrics, schema.PACKETS_SENT, stats_after.packets_sent - stats_before.packets_sent, MTYPES.TYPE_LONG)
+            self._add_metric(metrics, schema.PACKETS_RECV, stats_after.packets_recv - stats_before.packets_recv, MTYPES.TYPE_LONG)
             self._add_metric(metrics, schema.IP_ADDRESS, address, MTYPES.TYPE_STRING)
             net_updates.append(NetUpdate(iface_name, metrics))
 

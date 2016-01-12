@@ -8,6 +8,7 @@
 <body>
 <%@include file="../common/header.jsp" %>
 <div class="container">
+    <h1>${site.title}</h1>
     <c:forEach items="${racks}" var="rack">
         <div class="panel panel-default rack-panel">
             <div class="panel-heading">

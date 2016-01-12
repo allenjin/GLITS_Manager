@@ -1,5 +1,6 @@
 package com.grandland.glits.ms;
 
+import com.grandland.glits.ms.config.AgentConfig;
 import com.grandland.glits.ms.protocol.HeartbeatService;
 import com.grandland.glits.ms.protocol.MetricService;
 import com.grandland.glits.ms.service.HeartbeatServiceImpl;
@@ -28,13 +29,12 @@ public class AgentServer {
 
     private static final Logger LOG = LoggerFactory.getLogger(AgentServer.class);
 
-    private static final int HEARTBEAT_PORT = 9090;
-
-    private static final int METRIC_PORT = 9191;
-
     private TServer heartbeatServer;
 
     private TServer metricServer;
+
+    @Autowired
+    private AgentConfig agentConfig;
 
     @Autowired
     private HeartbeatServiceImpl heartbeatService;
@@ -54,7 +54,7 @@ public class AgentServer {
             public void run() {
                 try {
                     HeartbeatService.Processor processor = new HeartbeatService.Processor(heartbeatService);
-                    TServerTransport serverTransport = new TServerSocket(HEARTBEAT_PORT);
+                    TServerTransport serverTransport = new TServerSocket(agentConfig.getHeartbeatServerPort());
                     heartbeatServer = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));
                     LOG.info("Agent heartbeat Server start...");
 
@@ -76,7 +76,7 @@ public class AgentServer {
             public void run() {
                 try {
                     MetricService.Processor processor = new MetricService.Processor(metricService);
-                    TServerTransport serverTransport = new TServerSocket(METRIC_PORT);
+                    TServerTransport serverTransport = new TServerSocket(agentConfig.getMetricServerPort());
                     metricServer = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));
                     LOG.info("Agent metric Server start...");
                     metricServer.serve();

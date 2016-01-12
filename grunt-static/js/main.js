@@ -37,6 +37,19 @@ function highChartBuilder(container, type, xAxis, series, title, yTitle, options
     var plotOptions = {};
     var tooltip = {};
 
+    if(options && options.type == "NET"){
+        tooltip.pointFormatter = function() {
+            var ip = '';
+            for (var i in series) {
+                if (series[i].name == this.series.name) {
+                    ip = series[i].ip;
+                }
+            }
+            var ss = '<span style="color:' + this.series.color + '">' + this.series.name + '</span>: <b>' + this.y + 'Kb/s</b><br/>';
+            ss += '<span style="color:#55ddbb">IP地址</span>: <b>' + ip + '</b><br/>';
+            return ss;
+        };
+    }
     if(type === "column"){
         plotOptions.column = {
             stacking: 'percent'

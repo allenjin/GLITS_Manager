@@ -2,6 +2,7 @@ package com.grandland.glits.ms.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.grandland.glits.ms.config.SiteConfig;
 import com.grandland.glits.ms.dao.GlHostDAO;
 import com.grandland.glits.ms.domain.GlHost;
 import com.grandland.glits.ms.metric.common.MonitoringType;
@@ -38,12 +39,14 @@ public class PhysicalController {
     @Autowired
     private GlHostDAO glHostDAO;
 
-    private ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+    private SiteConfig siteConfig;
 
     private static final int METRIC_SIZE = 10;
 
     @RequestMapping("/")
     public String index(Map<String, Object> model) {
+        model.put("site", siteConfig);
         model.put("racks", rackService.queryRacks());
         return "physical/racks";
     }

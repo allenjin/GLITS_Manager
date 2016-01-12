@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,9 +38,11 @@ public class MetricInfoService {
 
     public List<MetricInfoRecord> query(String hostName, MonitoringType type, int size) {
         PageRequest request = new PageRequest(0, size);
-        Page<MetricInfo> page = metricInfoDAO.findByHostNameAndTypeAndGrading(hostName, type, MetricGrading.MINUTE, request);
+        Page<MetricInfo> page = metricInfoDAO.findByHostNameAndTypeAndGradingOrderByIdDesc(hostName, type, MetricGrading.MINUTE, request);
         List records = new LinkedList();
-        for (MetricInfo metricInfo : page.getContent()) {
+        List<MetricInfo> metricInfoList = page.getContent();
+        for (int i = metricInfoList.size() - 1; i >= 0; i --) {
+            MetricInfo metricInfo = metricInfoList.get(i);
             try {
                 records.add(new MetricInfoRecord(hostName,
                         metricInfo.getUpdateTime(),

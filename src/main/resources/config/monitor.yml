@@ -1,0 +1,15 @@
+#agent config
+agent:
+  heartbeatInterval: 30
+  heartbeatServerPort: 9090
+  metricInterval: 60
+  metricServerPort: 9191
+
+#heartbeat threshold
+monitor:
+  #percent, great
+  cpuThreshold: 80
+  #percent, great
+  memThreshold: 85
+  #unit(GB), less
+  diskThreshold: 10
