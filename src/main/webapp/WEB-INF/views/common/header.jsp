@@ -26,6 +26,25 @@
                         <a href="${ctx}/data-access/">定时任务</a>
                     </li>
                 </ul>
+                <ul class="user-panel-list pull-right">
+                    <li>
+                        <a href="#">
+                            <span class="glyphicon glyphicon-bell"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="glyphicon glyphicon-user"></span>
+                            用户名
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="glyphicon glyphicon-log-out"></span>
+                            退出
+                        </a>
+                    </li>
+                </ul>
             </div>
             <!-- /.navbar-collapse -->
         </div>

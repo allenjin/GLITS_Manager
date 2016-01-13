@@ -1,6 +1,7 @@
 package com.grandland.glits.ms.store;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,6 +18,7 @@ public class HostHeartbeat {
     private double cpuUsage;
     private double memUsage;
     private Map mountAvailSpace;
+    private List<HostProcessStat> processStats;
 
     public int getVersion() {
         return version;
@@ -64,6 +66,14 @@ public class HostHeartbeat {
 
     public void setMountAvailSpace(Map mountAvailSpace) {
         this.mountAvailSpace = mountAvailSpace;
+    }
+
+    public List getProcessStats() {
+        return processStats;
+    }
+
+    public void setProcessStats(List processStats) {
+        this.processStats = processStats;
     }
 
     @Override

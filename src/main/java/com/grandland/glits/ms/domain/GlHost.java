@@ -118,7 +118,7 @@ public class GlHost {
         this.rack = rack;
     }
 
-    public Set getRoles() {
+    public Set<GlRole> getRoles() {
         return roles;
     }
 

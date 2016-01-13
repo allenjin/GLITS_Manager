@@ -19,7 +19,20 @@ public class GlRole {
     private Integer id;
 
     @Column(nullable = false, unique = true)
-    private String name;    //机器角色名称
+    private String name;    //机器角色名称,相当于进程名称
+
+    @Column(name = "display_name")
+    private String displayName; //显示名称
+
+    private boolean running = true; //是否运行
+
+    @Column(name = "auto_start")
+    private boolean autoRetart = false; //是否自动重启
+
+    private String script;  //程序主脚本,用于启动,停止,重启任务
+
+    @Enumerated(EnumType.STRING)
+    private PsCategory category;
 
     @OneToMany(mappedBy = "role")
     private Set<GlCommand> commands;
@@ -33,6 +46,21 @@ public class GlRole {
         joinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")},
         inverseJoinColumns = {@JoinColumn(name = "host_id", referencedColumnName = "id")})
     private Set<GlHost> hosts;
+
+    //通过进程类别来决定获取PID的方法
+    public enum PsCategory{
+        SYS("系统程序"),    //系统安装程序
+        JAVA("Java程序"),   //平台编写Java程序
+        AGENT("监控程序");  //客户端代理进程
+
+        String name;
+        PsCategory(String name){
+            this.name = name;
+        }
+        public String getName() {
+            return name;
+        }
+    }
 
     public Integer getId() {
         return id;
@@ -74,14 +102,56 @@ public class GlRole {
         this.hosts = hosts;
     }
 
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+
+    public boolean isAutoRetart() {
+        return autoRetart;
+    }
+
+    public void setAutoRetart(boolean autoRetart) {
+        this.autoRetart = autoRetart;
+    }
+
+    public String getScript() {
+        return script;
+    }
+
+    public void setScript(String script) {
+        this.script = script;
+    }
+
+    public PsCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(PsCategory category) {
+        this.category = category;
+    }
+
     @Override
     public String toString() {
         return "GlRole{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", commands=" + commands +
-                ", service=" + service +
-                ", hosts=" + hosts +
+                ", displayName='" + displayName + '\'' +
+                ", running=" + running +
+                ", autoRetart=" + autoRetart +
+                ", script='" + script + '\'' +
+                ", category=" + category +
                 '}';
     }
 }

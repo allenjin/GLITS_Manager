@@ -29,7 +29,7 @@ gen
 .DS_Store
 
 ### python
-agent-client/glits-ms-agent.log
+agent-client/**/glits-ms-agent.log
 agent-client/**.
 
 

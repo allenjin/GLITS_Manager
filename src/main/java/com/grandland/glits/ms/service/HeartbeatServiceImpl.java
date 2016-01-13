@@ -3,6 +3,7 @@ package com.grandland.glits.ms.service;
 import com.grandland.glits.ms.config.AgentConfig;
 import com.grandland.glits.ms.dao.GlHostDAO;
 import com.grandland.glits.ms.domain.GlHost;
+import com.grandland.glits.ms.domain.GlRole;
 import com.grandland.glits.ms.protocol.HeartbeatRequest;
 import com.grandland.glits.ms.protocol.HeartbeatResponse;
 import com.grandland.glits.ms.protocol.HeartbeatService;
@@ -67,7 +68,8 @@ public class HeartbeatServiceImpl implements HeartbeatService.Iface {
         hb.setLastSeen(new Date());
         hb.setMemUsage(request.getMem_usage());
         hb.setMountAvailSpace(request.getMounted_avail_space());
-
+        List processStats = request.getProcesses_stats();
+//        hb.setProcessStats(processStats);
         host.setHeartbeat(hb);
 
         return host;
@@ -84,7 +86,17 @@ public class HeartbeatServiceImpl implements HeartbeatService.Iface {
 
     private List<Process> buildProcess(GlHost host){
         List processList = new LinkedList();
-
+        for(GlRole role : host.getRoles()){
+            LOG.debug("role:{}",role);
+            Process process = new Process();
+            process.setId(role.getId());
+            process.setName(role.getName());
+            process.setRunning(role.isRunning());
+            process.setAuto_restart(role.isAutoRetart());
+            process.setScript(role.getScript());
+            process.setType(role.getCategory().toString());
+            processList.add(process);
+        }
         return processList;
     }
 

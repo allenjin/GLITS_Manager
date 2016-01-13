@@ -24,9 +24,8 @@ class ProcessStatus:
    - name
    - status
    - pid
-   - cpu_percent
-   - mem_percent
-   - run_time
+   - username
+   - stats
   """
 
   thrift_spec = (
@@ -35,19 +34,17 @@ class ProcessStatus:
     (2, TType.STRING, 'name', None, None, ), # 2
     (3, TType.STRING, 'status', None, None, ), # 3
     (4, TType.I32, 'pid', None, None, ), # 4
-    (5, TType.DOUBLE, 'cpu_percent', None, None, ), # 5
-    (6, TType.DOUBLE, 'mem_percent', None, None, ), # 6
-    (7, TType.I64, 'run_time', None, None, ), # 7
+    (5, TType.STRING, 'username', None, None, ), # 5
+    (6, TType.MAP, 'stats', (TType.I32,None,TType.DOUBLE,None), None, ), # 6
   )
 
-  def __init__(self, id=None, name=None, status=None, pid=None, cpu_percent=None, mem_percent=None, run_time=None,):
+  def __init__(self, id=None, name=None, status=None, pid=None, username=None, stats=None,):
     self.id = id
     self.name = name
     self.status = status
     self.pid = pid
-    self.cpu_percent = cpu_percent
-    self.mem_percent = mem_percent
-    self.run_time = run_time
+    self.username = username
+    self.stats = stats
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -79,18 +76,19 @@ class ProcessStatus:
         else:
           iprot.skip(ftype)
       elif fid == 5:
-        if ftype == TType.DOUBLE:
-          self.cpu_percent = iprot.readDouble()
+        if ftype == TType.STRING:
+          self.username = iprot.readString()
         else:
           iprot.skip(ftype)
       elif fid == 6:
-        if ftype == TType.DOUBLE:
-          self.mem_percent = iprot.readDouble()
-        else:
-          iprot.skip(ftype)
-      elif fid == 7:
-        if ftype == TType.I64:
-          self.run_time = iprot.readI64()
+        if ftype == TType.MAP:
+          self.stats = {}
+          (_ktype1, _vtype2, _size0 ) = iprot.readMapBegin()
+          for _i4 in xrange(_size0):
+            _key5 = iprot.readI32()
+            _val6 = iprot.readDouble()
+            self.stats[_key5] = _val6
+          iprot.readMapEnd()
         else:
           iprot.skip(ftype)
       else:
@@ -119,17 +117,17 @@ class ProcessStatus:
       oprot.writeFieldBegin('pid', TType.I32, 4)
       oprot.writeI32(self.pid)
       oprot.writeFieldEnd()
-    if self.cpu_percent is not None:
-      oprot.writeFieldBegin('cpu_percent', TType.DOUBLE, 5)
-      oprot.writeDouble(self.cpu_percent)
+    if self.username is not None:
+      oprot.writeFieldBegin('username', TType.STRING, 5)
+      oprot.writeString(self.username)
       oprot.writeFieldEnd()
-    if self.mem_percent is not None:
-      oprot.writeFieldBegin('mem_percent', TType.DOUBLE, 6)
-      oprot.writeDouble(self.mem_percent)
-      oprot.writeFieldEnd()
-    if self.run_time is not None:
-      oprot.writeFieldBegin('run_time', TType.I64, 7)
-      oprot.writeI64(self.run_time)
+    if self.stats is not None:
+      oprot.writeFieldBegin('stats', TType.MAP, 6)
+      oprot.writeMapBegin(TType.I32, TType.DOUBLE, len(self.stats))
+      for kiter7,viter8 in self.stats.items():
+        oprot.writeI32(kiter7)
+        oprot.writeDouble(viter8)
+      oprot.writeMapEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -144,9 +142,8 @@ class ProcessStatus:
     value = (value * 31) ^ hash(self.name)
     value = (value * 31) ^ hash(self.status)
     value = (value * 31) ^ hash(self.pid)
-    value = (value * 31) ^ hash(self.cpu_percent)
-    value = (value * 31) ^ hash(self.mem_percent)
-    value = (value * 31) ^ hash(self.run_time)
+    value = (value * 31) ^ hash(self.username)
+    value = (value * 31) ^ hash(self.stats)
     return value
 
   def __repr__(self):
@@ -165,9 +162,10 @@ class Process:
   Attributes:
    - id
    - name
-   - program
+   - script
    - running
    - auto_restart
+   - type
    - arguments
   """
 
@@ -175,18 +173,20 @@ class Process:
     None, # 0
     (1, TType.I32, 'id', None, None, ), # 1
     (2, TType.STRING, 'name', None, None, ), # 2
-    (3, TType.STRING, 'program', None, None, ), # 3
+    (3, TType.STRING, 'script', None, None, ), # 3
     (4, TType.BOOL, 'running', None, None, ), # 4
     (5, TType.BOOL, 'auto_restart', None, None, ), # 5
-    (6, TType.STRING, 'arguments', None, None, ), # 6
+    (6, TType.STRING, 'type', None, None, ), # 6
+    (7, TType.STRING, 'arguments', None, None, ), # 7
   )
 
-  def __init__(self, id=None, name=None, program=None, running=None, auto_restart=None, arguments=None,):
+  def __init__(self, id=None, name=None, script=None, running=None, auto_restart=None, type=None, arguments=None,):
     self.id = id
     self.name = name
-    self.program = program
+    self.script = script
     self.running = running
     self.auto_restart = auto_restart
+    self.type = type
     self.arguments = arguments
 
   def read(self, iprot):
@@ -210,7 +210,7 @@ class Process:
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.STRING:
-          self.program = iprot.readString()
+          self.script = iprot.readString()
         else:
           iprot.skip(ftype)
       elif fid == 4:
@@ -224,6 +224,11 @@ class Process:
         else:
           iprot.skip(ftype)
       elif fid == 6:
+        if ftype == TType.STRING:
+          self.type = iprot.readString()
+        else:
+          iprot.skip(ftype)
+      elif fid == 7:
         if ftype == TType.STRING:
           self.arguments = iprot.readString()
         else:
@@ -246,9 +251,9 @@ class Process:
       oprot.writeFieldBegin('name', TType.STRING, 2)
       oprot.writeString(self.name)
       oprot.writeFieldEnd()
-    if self.program is not None:
-      oprot.writeFieldBegin('program', TType.STRING, 3)
-      oprot.writeString(self.program)
+    if self.script is not None:
+      oprot.writeFieldBegin('script', TType.STRING, 3)
+      oprot.writeString(self.script)
       oprot.writeFieldEnd()
     if self.running is not None:
       oprot.writeFieldBegin('running', TType.BOOL, 4)
@@ -258,8 +263,12 @@ class Process:
       oprot.writeFieldBegin('auto_restart', TType.BOOL, 5)
       oprot.writeBool(self.auto_restart)
       oprot.writeFieldEnd()
+    if self.type is not None:
+      oprot.writeFieldBegin('type', TType.STRING, 6)
+      oprot.writeString(self.type)
+      oprot.writeFieldEnd()
     if self.arguments is not None:
-      oprot.writeFieldBegin('arguments', TType.STRING, 6)
+      oprot.writeFieldBegin('arguments', TType.STRING, 7)
       oprot.writeString(self.arguments)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -273,9 +282,10 @@ class Process:
     value = 17
     value = (value * 31) ^ hash(self.id)
     value = (value * 31) ^ hash(self.name)
-    value = (value * 31) ^ hash(self.program)
+    value = (value * 31) ^ hash(self.script)
     value = (value * 31) ^ hash(self.running)
     value = (value * 31) ^ hash(self.auto_restart)
+    value = (value * 31) ^ hash(self.type)
     value = (value * 31) ^ hash(self.arguments)
     return value
 
@@ -359,22 +369,22 @@ class HeartbeatRequest:
       elif fid == 6:
         if ftype == TType.LIST:
           self.processes_stats = []
-          (_etype3, _size0) = iprot.readListBegin()
-          for _i4 in xrange(_size0):
-            _elem5 = ProcessStatus()
-            _elem5.read(iprot)
-            self.processes_stats.append(_elem5)
+          (_etype12, _size9) = iprot.readListBegin()
+          for _i13 in xrange(_size9):
+            _elem14 = ProcessStatus()
+            _elem14.read(iprot)
+            self.processes_stats.append(_elem14)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 7:
         if ftype == TType.MAP:
           self.mounted_avail_space = {}
-          (_ktype7, _vtype8, _size6 ) = iprot.readMapBegin()
-          for _i10 in xrange(_size6):
-            _key11 = iprot.readString()
-            _val12 = iprot.readI64()
-            self.mounted_avail_space[_key11] = _val12
+          (_ktype16, _vtype17, _size15 ) = iprot.readMapBegin()
+          for _i19 in xrange(_size15):
+            _key20 = iprot.readString()
+            _val21 = iprot.readI64()
+            self.mounted_avail_space[_key20] = _val21
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
@@ -411,16 +421,16 @@ class HeartbeatRequest:
     if self.processes_stats is not None:
       oprot.writeFieldBegin('processes_stats', TType.LIST, 6)
       oprot.writeListBegin(TType.STRUCT, len(self.processes_stats))
-      for iter13 in self.processes_stats:
-        iter13.write(oprot)
+      for iter22 in self.processes_stats:
+        iter22.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.mounted_avail_space is not None:
       oprot.writeFieldBegin('mounted_avail_space', TType.MAP, 7)
       oprot.writeMapBegin(TType.STRING, TType.I64, len(self.mounted_avail_space))
-      for kiter14,viter15 in self.mounted_avail_space.items():
-        oprot.writeString(kiter14)
-        oprot.writeI64(viter15)
+      for kiter23,viter24 in self.mounted_avail_space.items():
+        oprot.writeString(kiter23)
+        oprot.writeI64(viter24)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -505,22 +515,22 @@ class HeartbeatResponse:
       elif fid == 4:
         if ftype == TType.LIST:
           self.processes = []
-          (_etype19, _size16) = iprot.readListBegin()
-          for _i20 in xrange(_size16):
-            _elem21 = Process()
-            _elem21.read(iprot)
-            self.processes.append(_elem21)
+          (_etype28, _size25) = iprot.readListBegin()
+          for _i29 in xrange(_size25):
+            _elem30 = Process()
+            _elem30.read(iprot)
+            self.processes.append(_elem30)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 5:
         if ftype == TType.MAP:
           self.extra_configs = {}
-          (_ktype23, _vtype24, _size22 ) = iprot.readMapBegin()
-          for _i26 in xrange(_size22):
-            _key27 = iprot.readString()
-            _val28 = iprot.readString()
-            self.extra_configs[_key27] = _val28
+          (_ktype32, _vtype33, _size31 ) = iprot.readMapBegin()
+          for _i35 in xrange(_size31):
+            _key36 = iprot.readString()
+            _val37 = iprot.readString()
+            self.extra_configs[_key36] = _val37
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
@@ -549,16 +559,16 @@ class HeartbeatResponse:
     if self.processes is not None:
       oprot.writeFieldBegin('processes', TType.LIST, 4)
       oprot.writeListBegin(TType.STRUCT, len(self.processes))
-      for iter29 in self.processes:
-        iter29.write(oprot)
+      for iter38 in self.processes:
+        iter38.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.extra_configs is not None:
       oprot.writeFieldBegin('extra_configs', TType.MAP, 5)
       oprot.writeMapBegin(TType.STRING, TType.STRING, len(self.extra_configs))
-      for kiter30,viter31 in self.extra_configs.items():
-        oprot.writeString(kiter30)
-        oprot.writeString(viter31)
+      for kiter39,viter40 in self.extra_configs.items():
+        oprot.writeString(kiter39)
+        oprot.writeString(viter40)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()

@@ -9,18 +9,18 @@ struct ProcessStatus{
     2:string name,
     3:string status,
     4:int pid,
-    5:double cpu_percent,
-    6:double mem_percent,
-    7:long run_time
+    5:string username,
+    6:map<int, double> stats
 }
 
 struct Process{
     1:int id,
     2:string name,
-    3:string program,
+    3:string script,
     4:bool running,
     5:bool auto_restart,
-    6:string arguments
+    6:string type,
+    7:string arguments
 }
 
 struct HeartbeatRequest{
