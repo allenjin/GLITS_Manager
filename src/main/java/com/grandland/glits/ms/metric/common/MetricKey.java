@@ -42,6 +42,13 @@ public class MetricKey {
     public static final int DROP_IN = 56;
     public static final int DROP_OUT = 57;
     public static final int IP_ADDRESS = 58;
+    
+    // process monitor
+    public static final int  PS_CPU_USAGE = 100;
+    public static final int PS_MEM_USAGE = 101;
+    public static final int PS_CPU_TIME = 102;
+    public static final int PS_CREATE_TIME = 103;
+    public static final int PS_NUM_THREADS = 104;
 //
 //    //操作系统类型
 //    OS(1),

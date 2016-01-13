@@ -8,6 +8,8 @@ import signal
 import psutil
 import socket
 import logging
+import commands
+import re
 import logging.handlers
 
 from protocol.heartbeat import HeartbeatService
@@ -17,6 +19,7 @@ from thrift.transport import TSocket
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
 from monitor import MonitorDaemon
+from monitor import schema
 
 LOG = logging.getLogger(__name__)
 
@@ -45,6 +48,7 @@ class Agent(object):
         self.hostname = socket.gethostname()
         self.ip_address = socket.gethostbyname(self.hostname)
         self.monitor_daemon = None
+        self.process_stats = []
 
     def configure(self):
         pid = os.getpid()
@@ -62,7 +66,9 @@ class Agent(object):
         cpu_usage = psutil.cpu_percent(interval=None)
         phymem = psutil.virtual_memory()
         memory_usage = phymem.percent
-        processes = []
+        #auto add agent process info to process_stats, the role id is 0 and role name is 'Agent' by default
+        self.process_stats.append(self.get_agent_status())
+        processes = self.process_stats
         mounted_avail_space = dict()
         for partition in psutil.disk_partitions():
             mountpoint = partition.mountpoint
@@ -80,6 +86,48 @@ class Agent(object):
         if self.agent_timeout is not response.metric_interval:
             self.agent_timeout = response.metric_interval
             self.monitor_daemon.set_timeout(self.agent_timeout)
+        self.handle_host_process(response.processes)
+
+    def handle_host_process(self, processList):
+        self.process_stats = []
+        for process in processList:
+            pid = self.getPidByType(process.name, process.type)
+            if pid is None:
+                LOG.error("can't find process use name={%s}, will ignore", process.name)
+                continue
+            else:
+                try:
+                    sys_ps = psutil.Process(pid)
+                    ps_stats = self.processStatsBuild(process.id, process.name, sys_ps)
+                    self.process_stats.append(ps_stats)
+                except:
+                    LOG.error("can't find process use pid={%s}, will ignore", pid)
+                    continue
+
+    def processStatsBuild(self, r_id, r_name, sys_ps):
+        ps_stats = dict()
+        ps_stats[schema.PS_CPU_USAGE] = sys_ps.cpu_percent(interval=None)
+        ps_stats[schema.PS_MEM_USAGE] = sys_ps.memory_percent()
+        ps_stats[schema.PS_CPU_TIME] = sys_ps.cpu_times().user
+        ps_stats[schema.PS_CREATE_TIME] = sys_ps.create_time()
+        ps_stats[schema.PS_NUM_THREADS] = sys_ps.num_threads()
+        processStatus = ProcessStatus(r_id, r_name, sys_ps.status(), sys_ps.pid, sys_ps.username(), ps_stats)
+        return processStatus
+
+    def getPidByType(self, name, p_type):
+        pid = ''
+        if p_type == 'JAVA':
+            pid = commands.getoutput('jps | grep ' + name + " | awk 'NR==1 {print $1}'")
+        elif p_type == 'SYS':
+            pid = commands.getoutput('ps -elf | grep ' + name + " | awk 'NR==1 {print $2}'")
+        pid = (None if pid == '' else int(pid))
+        return pid
+
+    def get_agent_status(self):
+        agent_stats = dict()
+        pid = os.getpid()
+        agent_ps = psutil.Process(pid)
+        return self.processStatsBuild(0, "Agent", agent_ps)
 
     def send_heartbeat(self, request):
         transport = TSocket.TSocket(AGENT_SERVER_HOST, AGENT_SERVER_PORT)
@@ -107,6 +155,7 @@ class Agent(object):
             last = time.time()
             try:
                 request = self.prepare_heartbeat_request()
+                LOG.debug(request)
                 response = self.send_heartbeat(request)
                 #if send heartbeat success, reset retry time to zero
                 self.heartbeat_retry_times = 0
