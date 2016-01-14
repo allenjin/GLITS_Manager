@@ -8,9 +8,16 @@ import commands
 import signal
 import psutil
 import socket
-from subprocess import check_output
+import subprocess
 
 def main():
+    # pidTest()
+    subprocessTest()
+
+def subprocessTest():
+    out = subprocess.call("/Users/allen/myshell/test.sh start", shell=True)
+
+def pidTest():
     pid = getPidByType('Application', 'JAVA')
     try:
         p = psutil.Process(pid)

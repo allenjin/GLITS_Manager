@@ -9,6 +9,7 @@ import psutil
 import socket
 import logging
 import commands
+import subprocess
 import re
 import logging.handlers
 
@@ -66,8 +67,6 @@ class Agent(object):
         cpu_usage = psutil.cpu_percent(interval=None)
         phymem = psutil.virtual_memory()
         memory_usage = phymem.percent
-        #auto add agent process info to process_stats, the role id is 0 and role name is 'Agent' by default
-        self.process_stats.append(self.get_agent_status())
         processes = self.process_stats
         mounted_avail_space = dict()
         for partition in psutil.disk_partitions():
@@ -90,25 +89,54 @@ class Agent(object):
 
     def handle_host_process(self, processList):
         self.process_stats = []
+        #auto add agent process info to process_stats, the role id is 0 and role name is 'Agent' by default
+        self.process_stats.append(self.get_agent_status())
         for process in processList:
             pid = self.getPidByType(process.name, process.type)
             if pid is None:
-                LOG.error("can't find process use name={%s}, will ignore", process.name)
-                continue
+                if process.running:
+                    if process.auto_restart:
+                        # we use pid = -1 show that the process will restart by agent
+                        pss = ProcessStatus(process.id, process.name, "restart", -1, None)
+                        self.process_stats.append(pss)
+                        self.startProcess(process)
+                        LOG.info("can't find process[name={%s},auto_restart=True], will auto restart by agent", process.name)
+                    else:
+                        # we use pid = -2 show that the process is marked as running, but has already stopped
+                        pss = ProcessStatus(process.id, process.name, "stop", -2, None)
+                        self.process_stats.append(pss)
+                        LOG.warn("can't find process[name={%s},auto_restart=False], will ignore by agent", process.name)
             else:
-                try:
-                    sys_ps = psutil.Process(pid)
-                    ps_stats = self.processStatsBuild(process.id, process.name, sys_ps)
-                    self.process_stats.append(ps_stats)
-                except:
-                    LOG.error("can't find process use pid={%s}, will ignore", pid)
-                    continue
+                if process.running:
+                    try:
+                        sys_ps = psutil.Process(pid)
+                        ps_stats = self.processStatsBuild(process.id, process.name, sys_ps)
+                        self.process_stats.append(ps_stats)
+                    except:
+                        LOG.error("can't find process use pid={%s}, will ignore", pid)
+                        continue
+                else:
+                    # we use status = -3 show that process is marked as stop, but is still running
+                    pss = ProcessStatus(process.id, process.name, "abandon", pid, None)
+                    self.process_stats.append(pss)
+                    LOG.warn("find process[ pid={%s},name={%s}] is marked as stop, but is still running", pid, process.name)
+
+    def startProcess(self, process):
+        if process.script:
+            cmd = process.script + " start"
+            try:
+                rc = subprocess.call(cmd, shell=True)
+                LOG.info("start process name={%s} sucess,rc={%s}", process.name, rc)
+            except OSError:
+                LOG.error("start process name={%s} error, script={%s}", process.name, process.script)
+        else:
+            LOG.error("start process name={%s} error, script is None", process.name)
 
     def processStatsBuild(self, r_id, r_name, sys_ps):
         ps_stats = dict()
         ps_stats[schema.PS_CPU_USAGE] = sys_ps.cpu_percent(interval=None)
         ps_stats[schema.PS_MEM_USAGE] = sys_ps.memory_percent()
-        ps_stats[schema.PS_CPU_TIME] = sys_ps.cpu_times().user
+        ps_stats[schema.PS_CPU_TIME] = sys_ps.cpu_times().system + sys_ps.cpu_times().user
         ps_stats[schema.PS_CREATE_TIME] = sys_ps.create_time()
         ps_stats[schema.PS_NUM_THREADS] = sys_ps.num_threads()
         processStatus = ProcessStatus(r_id, r_name, sys_ps.status(), sys_ps.pid, sys_ps.username(), ps_stats)
@@ -162,10 +190,11 @@ class Agent(object):
                 self.handle_heartbeat_response(response)
             except Thrift.TException, tx:
                 LOG.exception("Caught unexpected exception {%s} in main loop while sending heartbeat", tx.message)
-                retry_sleep_time = self.heartbeat_retry_times * self.heartbeat_retry_factor
-                LOG.exception("will retry to send heartbeat, sleep time={%s}", retry_sleep_time)
-                self.heartbeat_retry_times += 1
-                time.sleep(retry_sleep_time)
+                # comment sleep action, avoid sleep too long, and can't aware agent is still running
+                # retry_sleep_time = self.heartbeat_retry_times * self.heartbeat_retry_factor
+                # LOG.exception("will retry to send heartbeat, sleep time={%s}", retry_sleep_time)
+                # self.heartbeat_retry_times += 1
+                # time.sleep(retry_sleep_time)
 
             diff = time.time() - last
             if diff < self.heartbeat_interval:

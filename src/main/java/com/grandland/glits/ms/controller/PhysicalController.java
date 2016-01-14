@@ -8,6 +8,8 @@ import com.grandland.glits.ms.domain.GlHost;
 import com.grandland.glits.ms.metric.common.MonitoringType;
 import com.grandland.glits.ms.metric.service.MetricInfoService;
 import com.grandland.glits.ms.service.RackService;
+import com.grandland.glits.ms.store.HostHeartbeat;
+import com.grandland.glits.ms.store.HostProcessStat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -60,6 +63,8 @@ public class PhysicalController {
         model.put("memInfo", metricInfoService.MetricInfoJson(host.getHostName(), MonitoringType.HOST_MEM, METRIC_SIZE));
         model.put("netInfo", metricInfoService.MetricInfoJson(host.getHostName(), MonitoringType.HOST_NETWORK, METRIC_SIZE));
         model.put("fsInfo", metricInfoService.MetricInfoJson(host.getHostName(), MonitoringType.HOST_FILE_SYSTEM, METRIC_SIZE));
+        model.put("psInfo", metricInfoService.hostProcessStatsJson(host));
         return "physical/host";
     }
+
 }

@@ -4,11 +4,10 @@ import com.grandland.glits.ms.config.AgentConfig;
 import com.grandland.glits.ms.dao.GlHostDAO;
 import com.grandland.glits.ms.domain.GlHost;
 import com.grandland.glits.ms.domain.GlRole;
-import com.grandland.glits.ms.protocol.HeartbeatRequest;
-import com.grandland.glits.ms.protocol.HeartbeatResponse;
-import com.grandland.glits.ms.protocol.HeartbeatService;
+import com.grandland.glits.ms.protocol.*;
 import com.grandland.glits.ms.protocol.Process;
 import com.grandland.glits.ms.store.HostHeartbeat;
+import com.grandland.glits.ms.store.HostProcessStat;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,12 +67,28 @@ public class HeartbeatServiceImpl implements HeartbeatService.Iface {
         hb.setLastSeen(new Date());
         hb.setMemUsage(request.getMem_usage());
         hb.setMountAvailSpace(request.getMounted_avail_space());
-        List processStats = request.getProcesses_stats();
-//        hb.setProcessStats(processStats);
+        List<HostProcessStat> processStats = handleProcessStatus(request.getProcesses_stats());
+        hb.setProcessStats(processStats);
         host.setHeartbeat(hb);
 
         return host;
     }
+
+    private List handleProcessStatus(List<ProcessStatus> processStats) {
+        List<HostProcessStat> hostPsList = new LinkedList<>();
+        for (ProcessStatus pss : processStats) {
+            HostProcessStat hps = new HostProcessStat();
+            hps.setId(pss.getId());
+            hps.setName(pss.getName());
+            hps.setPid(pss.getPid());
+            hps.setStatus(pss.getStatus());
+            hps.setUserName(pss.getUsername());
+            hps.setStats(pss.getStats());
+            hostPsList.add(hps);
+        }
+        return hostPsList;
+    }
+
 
     private HeartbeatResponse buildResponse(GlHost host, HeartbeatRequest request) {
         HeartbeatResponse response = new HeartbeatResponse();
@@ -84,10 +99,9 @@ public class HeartbeatServiceImpl implements HeartbeatService.Iface {
         return response;
     }
 
-    private List<Process> buildProcess(GlHost host){
+    private List<Process> buildProcess(GlHost host) {
         List processList = new LinkedList();
-        for(GlRole role : host.getRoles()){
-            LOG.debug("role:{}",role);
+        for (GlRole role : host.getRoles()) {
             Process process = new Process();
             process.setId(role.getId());
             process.setName(role.getName());

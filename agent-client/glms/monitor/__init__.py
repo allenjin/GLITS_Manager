@@ -41,6 +41,9 @@ class MonitorDaemon(object):
         except Thrift.TException, tx:
             LOG.exception("Caught unexpected exception {%s} in main loop while sending metric messages.", tx.message)
             self.retry_times += 1
+            # avoid to sleep too long
+            if self.retry_times > 5:
+                self.retry_times = 1
             sleep_time = self.retry_factor * self.retry_times
             LOG.exception("will retry to send metric message, sleep_time={%s}", sleep_time)
             time.sleep(sleep_time)

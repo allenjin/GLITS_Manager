@@ -68,11 +68,11 @@ public class HostHeartbeat {
         this.mountAvailSpace = mountAvailSpace;
     }
 
-    public List getProcessStats() {
+    public List<HostProcessStat> getProcessStats() {
         return processStats;
     }
 
-    public void setProcessStats(List processStats) {
+    public void setProcessStats(List<HostProcessStat> processStats) {
         this.processStats = processStats;
     }
 

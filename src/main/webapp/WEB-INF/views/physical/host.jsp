@@ -22,8 +22,30 @@
         basicInfoBuild();
         cpuInfoBuild();
         fsInfoBuild();
+
+        processInfoBuild();
         memInfoBuild();
         netInfoBuild();
+
+        function processInfoBuild(){
+            console.log(${psInfo});
+            var psInfos = [];
+            var dataArray = ${psInfo};
+            var titles = ["进程号", "进程名", "%CPU", "%MEM", "运行时间", "用户", "状态"]
+            $.each(dataArray, function(i, process){
+                var ps = [];
+                ps.push(process.pid);
+                ps.push(process.name);
+                ps.push(Number(process.cpuUsage).toFixed(2));
+                ps.push(Number(process.memUsage).toFixed(2));
+                ps.push(uptimeParser(process.runTime / 1000));
+                ps.push(process.username);
+                ps.push(process.status);
+                psInfos.push(ps);
+            });
+            var psInfoPanel = metricPanelBuild("进程信息", glTable(titles, psInfos));
+            $('#rightCol').append(psInfoPanel);
+        }
 
         function basicInfoBuild(){
             var basicInfos = [];
