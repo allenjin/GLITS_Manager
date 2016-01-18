@@ -8,6 +8,10 @@
 <body>
     <%@include file="../common/header.jsp" %>
     <div class="container">
+        <ol class="breadcrumb">
+            <li><a href="${ctx}/physical/">物理视图</a></li>
+            <li class="active">${host.hostName}</li>
+        </ol>
         <div class="col-md-6" id="leftCol">
 
         </div>

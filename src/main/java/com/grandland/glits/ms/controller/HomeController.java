@@ -21,4 +21,17 @@ public class HomeController {
         return "redirect:/physical/";
     }
 
+    @RequestMapping("/test")
+    @ResponseBody
+    public String test(){
+        System.out.println(System.currentTimeMillis());
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(System.currentTimeMillis());
+        return "hello";
+    }
+
 }
