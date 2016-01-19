@@ -29,6 +29,20 @@ public class User {
     @JsonIgnore
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    public enum Role{
+        ROLE_ADMIN("管理员"),ROLE_USER("普通用户");
+        private String name;
+        Role(String name){
+            this.name = name;
+        }
+        public String getName(){
+            return name;
+        }
+    }
+
     private String mail;
 
     private String tel;
@@ -37,7 +51,8 @@ public class User {
 
     private Date lastLogin;
 
-    public Long getId() {
+    public Long
+    getId() {
         return id;
     }
 
@@ -52,6 +67,10 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
+
+    public Role getRole() { return role; }
+
+    public void setRole(Role role) { this.role = role; }
 
     public String getPassword() {
         return password;
