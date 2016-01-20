@@ -21,6 +21,18 @@ public class HomeController {
         return "redirect:/physical/";
     }
 
+    @RequestMapping("/login")
+    @ResponseBody
+    public String login(){
+        return "login";
+    }
+
+    @RequestMapping("/403")
+    @ResponseBody
+    public String forbidden(){
+        return "403";
+    }
+
     @RequestMapping("/test")
     @ResponseBody
     public String test(){
@@ -35,3 +47,4 @@ public class HomeController {
     }
 
 }
+
