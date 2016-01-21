@@ -4,6 +4,9 @@
 <html>
 <head>
     <%@include file="common/head.jsp" %>
+    <%@include file="common/script.jsp"%>
+    <script type="text/javascript" src="${ctx }/static/js/dialog-min.js"></script>
+    <link rel="stylesheet" href="${ctx}/static/css/ui-dialog.css" type="text/css">
     <style type="text/css">
         .login-form{
             margin: 0 auto;
@@ -56,22 +59,12 @@
         </div>
     </div>
     <div class="login-form">
-        <c:url value="/login" var="loginUrl"/>
+        <c:url value="${ctx }/logon" var="loginUrl"/>
         <form action="${loginUrl}" method="post">
             <div class="login-form-header">
                 <h1>观澜运维管理系统</h1>
             </div>
             <div class="login-form-body">
-                <c:if test="${param.error != null}">
-                    <p>
-                        Invalid username and password.
-                    </p>
-                </c:if>
-                <c:if test="${param.logout != null}">
-                    <p>
-                        You have been logged out.
-                    </p>
-                </c:if>
                 <div class="form-group">
                     <label for="username">用户名</label>
                     <input type="text" id="username" name="username" class="form-control"/>
@@ -81,12 +74,34 @@
                     <input type="password" id="password" name="password" class="form-control" />
                 </div>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                <button type="submit" class="btn btn-primary btn-block">Log in</button>
+                <button type="submit" class="btn btn-primary btn-block">登录</button>
             </div>
         </form>
+        <c:if test="${param.error != null}">
+            <script type="text/javascript">
+                dialog({
+                    content: '用户名或密码错误',
+                    okValue: '确定',
+                    ok: function () {
+                        this.close().remove();
+                    }
+                }).show();
+            </script>
+        </c:if>
+        <c:if test="${param.logout != null}">
+            <script type="text/javascript">
+                dialog({
+                    content: '用户已登出',
+                    okValue: '确定',
+                    ok: function () {
+                        this.close().remove();
+                    }
+                }).show();
+            </script>
+        </c:if>
     </div>
 </div>
 <%@include file="common/footer.jsp"%>
-<%@include file="common/script.jsp"%>
+
 </body>
 </html>

@@ -1,9 +1,15 @@
 package com.grandland.glits.ms.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  * User
@@ -16,7 +22,7 @@ import java.util.Date;
 @Table(name = "users", indexes = {
         @Index(name = "IDX_NAME", columnList = "name")
 })
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue
@@ -123,5 +129,51 @@ public class User {
                 ", avatar='" + avatar + '\'' +
                 ", lastLogin=" + lastLogin +
                 '}';
+    }
+
+    //待完善
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities(){
+        List<GrantedAuthority> al = new ArrayList<GrantedAuthority>();
+        al.add(new SimpleGrantedAuthority(getRole().name()));
+        return al;
+    }
+
+    @Override
+    public String getUsername() {
+        return name;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof User){
+            User oUser = (User) obj;
+            return name.equals(oUser.getUsername());
+        }
+        return false;
     }
 }

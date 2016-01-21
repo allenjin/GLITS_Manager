@@ -42,6 +42,7 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
             "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}",
             "org.springframework.boot:spring-boot-starter-security:${springBootVersion}",
+            'org.springframework.security:spring-security-taglibs:3.2.5.RELEASE',
             'javax.servlet:jstl:1.2',
 
             "org.apache.thrift:libthrift:0.9.3",

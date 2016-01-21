@@ -3,12 +3,9 @@ package com.grandland.glits.ms.service;
 import com.grandland.glits.ms.dao.UserDAO;
 import com.grandland.glits.ms.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
-import java.util.List;
-import java.util.ArrayList;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
  * CustomUserDetailsService
@@ -20,13 +17,8 @@ public class GlmsUserDetailsService implements UserDetailsService{
     UserDAO userDAO;
 
     @Override
-    public UserDetails loadUserByUsername(String username)  {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userDAO.findByName(username);
-
-        List<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
-        System.err.println("username is " + username + ", " + user.getRole().name());
-        return new org.springframework.security.core.userdetails.User(user.getName(),
-                user.getPassword(), authorities);
+        return user;
     }
 }
