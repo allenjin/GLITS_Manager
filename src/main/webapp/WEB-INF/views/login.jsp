@@ -73,6 +73,10 @@
                     <label for="password">密码</label>
                     <input type="password" id="password" name="password" class="form-control" />
                 </div>
+                <div class="form-group">
+                    <label for="remember-me">记住我</label>
+                    <input type="checkbox" name="remember-me" id="remember-me" class="forget-pwd">
+                </div>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 <button type="submit" class="btn btn-primary btn-block">登录</button>
             </div>
