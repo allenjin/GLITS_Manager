@@ -20,7 +20,7 @@ public class RackService {
     @Autowired
     private GlRackDAO glRackDAO;
 
-    public List<GlRack> queryRacks(){
-        return glRackDAO.findAllRacksWithHosts();
+    public List<GlRack> queryRacks() {
+        return glRackDAO.findAll();
     }
 }

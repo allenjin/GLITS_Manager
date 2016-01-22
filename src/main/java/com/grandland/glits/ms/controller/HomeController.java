@@ -17,7 +17,7 @@ import java.util.Map;
 public class HomeController {
 
     @RequestMapping("/")
-    public String index(Map<String, Object> model){
+    public String index(Map<String, Object> model) {
         return "redirect:/physical/";
     }
 
@@ -38,7 +38,7 @@ public class HomeController {
 
     @RequestMapping("/test")
     @ResponseBody
-    public String test(){
+    public String test() {
         System.out.println(System.currentTimeMillis());
         try {
             Thread.sleep(1000);

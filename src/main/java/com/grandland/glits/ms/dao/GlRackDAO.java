@@ -17,6 +17,4 @@ import java.util.List;
 @Repository
 public interface GlRackDAO extends JpaRepository<GlRack, Integer>{
 
-    @Query("SELECT distinct r from GlRack r join fetch r.hosts")
-    public List<GlRack> findAllRacksWithHosts();
 }

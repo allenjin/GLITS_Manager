@@ -37,9 +37,6 @@ public class PhysicalController {
     @Autowired
     private GlHostDAO glHostDAO;
 
-    @Autowired
-    private SiteConfig siteConfig;
-
     private static final int METRIC_SIZE = 10;
 
     @RequestMapping("/")

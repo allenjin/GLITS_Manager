@@ -21,10 +21,13 @@
                         <a href="${ctx}/data-access/">数据接入</a>
                     </li>
                     <li>
-                        <a href="${ctx}/data-access/">数据存储</a>
+                        <a href="${ctx}/data-store/">数据存储</a>
                     </li>
                     <li>
-                        <a href="${ctx}/data-access/">定时任务</a>
+                        <a href="${ctx}/timed-task/">定时任务</a>
+                    </li>
+                    <li>
+                        <a href="${ctx}/management/">系统管理</a>
                     </li>
                 </ul>
                 <ul class="user-panel-list pull-right">
