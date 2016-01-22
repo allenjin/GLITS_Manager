@@ -23,7 +23,7 @@ public class GlRack {
 
     private String  description;    //机架描述,具体物理位置
 
-    @OneToMany(mappedBy = "rack")
+    @OneToMany(mappedBy = "rack", fetch = FetchType.EAGER)
     private Set<GlHost> hosts;
 
     public Integer getId() {

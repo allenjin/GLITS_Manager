@@ -8,6 +8,8 @@
 <body>
 <%@include file="../common/header.jsp" %>
 <div class="container">
+    <%@include file="../common/sidebar.jsp"%>
+    <div class="main">
     <c:forEach items="${racks}" var="rack">
         <div class="panel panel-default rack-panel">
             <div class="panel-heading">
@@ -40,6 +42,7 @@
             </div>
         </div>
     </c:forEach>
+    </div>
 </div>
 <%@include file="../common/footer.jsp" %>
 <%@include file="../common/script.jsp" %>

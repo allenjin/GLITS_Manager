@@ -101,16 +101,19 @@ public class HeartbeatServiceImpl implements HeartbeatService.Iface {
 
     private List<Process> buildProcess(GlHost host) {
         List processList = new LinkedList();
-        for (GlRole role : host.getRoles()) {
-            Process process = new Process();
-            process.setId(role.getId());
-            process.setName(role.getName());
-            process.setRunning(role.isRunning());
-            process.setAuto_restart(role.isAutoRetart());
-            process.setScript(role.getScript());
-            process.setType(role.getCategory().toString());
-            processList.add(process);
+        if (host.getRoles() != null) {
+            for (GlRole role : host.getRoles()) {
+                Process process = new Process();
+                process.setId(role.getId());
+                process.setName(role.getName());
+                process.setRunning(role.isRunning());
+                process.setAuto_restart(role.isAutoRetart());
+                process.setScript(role.getScript());
+                process.setType(role.getCategory().toString());
+                processList.add(process);
+            }
         }
+
         return processList;
     }
 

@@ -8,7 +8,9 @@
 <body>
 <%@include file="../common/header.jsp" %>
 <div class="container">
-    <h1>数据存储</h1>
+    <%@include file="../common/sidebar.jsp"%>
+    <div class="main">
+    </div>
 </div>
 <%@include file="../common/footer.jsp" %>
 <%@include file="../common/script.jsp" %>

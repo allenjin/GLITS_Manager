@@ -17,25 +17,25 @@ import java.util.Map;
 public class HomeController {
 
     @RequestMapping("/")
-    public String index(Map<String, Object> model){
+    public String index(Map<String, Object> model) {
         return "redirect:/physical/";
     }
 
     @RequestMapping("/login")
     @ResponseBody
-    public String login(){
+    public String login() {
         return "login";
     }
 
     @RequestMapping("/403")
     @ResponseBody
-    public String forbidden(){
+    public String forbidden() {
         return "403";
     }
 
     @RequestMapping("/test")
     @ResponseBody
-    public String test(){
+    public String test() {
         System.out.println(System.currentTimeMillis());
         try {
             Thread.sleep(1000);
