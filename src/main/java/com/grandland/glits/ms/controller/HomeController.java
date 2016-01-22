@@ -22,15 +22,18 @@ public class HomeController {
     }
 
     @RequestMapping("/login")
-    @ResponseBody
-    public String login() {
+    public String login(Map<String, Object> model){
         return "login";
     }
 
     @RequestMapping("/403")
-    @ResponseBody
-    public String forbidden() {
+    public String forbidden(Map<String, Object> model){
         return "403";
+    }
+
+    @RequestMapping("/404")
+    public String notFound(Map<String, Object> model){
+        return "404";
     }
 
     @RequestMapping("/test")
