@@ -4,6 +4,8 @@ import com.grandland.glits.ms.domain.User;
 import com.grandland.glits.ms.json.OperationResult;
 import com.grandland.glits.ms.service.UserService;
 import com.grandland.glits.ms.utils.MessageUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +27,8 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/sys/self")
 public class SelfSettingController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SelfSettingController.class);
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -34,76 +38,77 @@ public class SelfSettingController {
     @Autowired
     PasswordEncoder encoder;
 
-    @RequestMapping(value="/")
-    public String selfIndex(){
+    @RequestMapping(value = "/")
+    public String selfIndex() {
         return "redirect:/sys/self/info";
     }
 
-    @RequestMapping(value="/info",method=RequestMethod.GET)
-    public ModelAndView selfInfo(){
+    @RequestMapping(value = "/info", method = RequestMethod.GET)
+    public ModelAndView selfInfo() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ModelAndView mav = new ModelAndView("/sys/self/self_info");
-        User user = userService.findUser(((User)userDetails).getId());
-        mav.addObject("user",user);
+        User user = userService.findUser(((User) userDetails).getId());
+        mav.addObject("user", user);
         return mav;
     }
 
-    @RequestMapping(value="/info", method=RequestMethod.POST)
-    public ModelAndView doUpdateInfo(@RequestParam("tel")String tel,
-                                     @RequestParam("mail")String mail){
+    @RequestMapping(value = "/info", method = RequestMethod.POST)
+    public ModelAndView doUpdateInfo(@RequestParam("tel") String tel,
+                                     @RequestParam("mail") String mail) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ModelAndView mav = new ModelAndView("/sys/self/self_info");
-        User user = userService.findUser(((User)userDetails).getId());
+        User user = userService.findUser(((User) userDetails).getId());
         OperationResult opResult = null;
-        if(tel.trim().equals("")){
+        if (tel.trim().equals("")) {
             opResult = new OperationResult(true, "联系电话不能为空");
-        }
-        else if(mail.trim().equals("")){
+        } else if (mail.trim().equals("")) {
             opResult = new OperationResult(true, "mail不能为空");
-        }else{
-            try{
+        } else {
+            try {
                 user.setTel(tel);
                 user.setMail(mail);
                 userService.save(user);
-                opResult = new OperationResult(false,MessageUtils.SUCCESS_UPDATE);
-            } catch (Exception e){
-                opResult = new OperationResult(true,MessageUtils.ERROR_SQL);
+                opResult = new OperationResult(false, MessageUtils.SUCCESS_UPDATE);
+            } catch (Exception e) {
+                opResult = new OperationResult(true, MessageUtils.ERROR_SQL);
             }
         }
         user = userService.findUser(user.getId());
-        mav.addObject("opResult",opResult);
-        mav.addObject("user",user);
+        mav.addObject("opResult", opResult);
+        mav.addObject("user", user);
         return mav;
     }
 
-    @RequestMapping(value="/password",method=RequestMethod.GET)
-    public ModelAndView changePassword(){
+    @RequestMapping(value = "/password", method = RequestMethod.GET)
+    public ModelAndView changePassword() {
         ModelAndView mav = new ModelAndView("/sys/self/pwd_edit");
         return mav;
     }
 
-    @RequestMapping(value="/password",method= RequestMethod.POST)
-    public ModelAndView doChangePassword(@RequestParam("origin-password")String oPassword,
+    @RequestMapping(value = "/password", method = RequestMethod.POST)
+    public ModelAndView doChangePassword(@RequestParam("origin-password") String oPassword,
                                          @RequestParam("password-1") String nPassword, @RequestParam("password-2") String nPassword2) {
         ModelAndView mav = new ModelAndView("/sys/self/pwd_edit");
         OperationResult opResult = null;
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        LOG.debug(userDetails.toString());
         if (nPassword.equals(nPassword2)) {
-            Authentication auth = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), oPassword,userDetails.getAuthorities());
+            Authentication auth = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), oPassword, userDetails.getAuthorities());
             try {
                 Authentication result = authenticationManager.authenticate(auth);
                 SecurityContextHolder.getContext().setAuthentication(result);
                 //update
                 try {
                     userService.changePassword(((User) userDetails).getId(), nPassword);
+                    opResult = new OperationResult(false, MessageUtils.SUCCESS_UPDATE);
                 } catch (Exception e) {
                     opResult = new OperationResult(true, MessageUtils.ERROR_SQL);
                 }
-                opResult = new OperationResult(false, MessageUtils.SUCCESS_UPDATE);
+
             } catch (AuthenticationException e) {
+                LOG.error(e.getMessage(), e);
                 opResult = new OperationResult(true, MessageUtils.ERROR_PASSWORD_WRONG);
             }
-
         } else {
             opResult = new OperationResult(true, MessageUtils.ERROR_PASSWORD_NOT_EQUAL);
         }

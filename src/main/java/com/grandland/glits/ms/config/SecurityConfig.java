@@ -18,6 +18,8 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 
+import javax.sql.DataSource;
+
 /**
  * SecurityConfig
  * Created by lwz on 2016/1/12.
@@ -38,7 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     protected void configure(AuthenticationManagerBuilder auth)
             throws Exception {
         auth.userDetailsService(userDetailsService());
-
         //指定密码加密所使用的加密器为passwordEncoder()
         // 需要将密码加密后写入数据库
         auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
