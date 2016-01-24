@@ -1,3 +1,72 @@
-.sidebar {
+html, body, .container, .sidebar, .main {
+  height: 100%;
+}
 
+.container {
+  margin: -@navbar-height 0 0 0;
+  padding: @navbar-height 0 0 0;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.sidebar {
+  float: left;
+  position: relative;
+  width: @glms-sidebar-width;
+  background-color: @glms-sidebar-bg;
+  ul {
+    margin: 50px 0;
+    padding: 0;
+    list-style: none;
+
+    .active {
+      a {
+        background-color: #3a4267;
+        color: #fff;
+        border-color: @glms-main-color;
+      }
+      span {
+        color: @glms-main-color;
+      }
+    }
+
+    li {
+      a {
+        display: block;
+        text-align: center;
+        padding: 8px 0;
+        color: @glms-sidebar-color;
+        text-decoration: none;
+        border-right: 5px solid transparent;
+        margin-bottom: 1px;
+        &:hover {
+          background-color: #3a4267;
+          color: #fff;
+        }
+      }
+      span {
+        font-size: 18px;
+        padding-right: 5px;
+      }
+    }
+  }
+  .copyright{
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+    border-top: 1px solid @gray-light;
+    bottom: 0;
+    p{
+      color: @glms-sidebar-color;
+      font-size: 12px;
+    }
+  }
+}
+
+.main {
+  padding: 30px 10px;
+  background-color: #fcfcfe;
+  overflow: scroll;
+  overflow-x: hidden;
 }
