@@ -10,6 +10,9 @@
 <div class="container">
     <%@include file="../common/sidebar.jsp"%>
     <div class="main">
+        <ol class="breadcrumb">
+            <li>物理视图</li>
+        </ol>
     <c:forEach items="${racks}" var="rack">
         <div class="panel panel-default rack-panel">
             <div class="panel-heading">

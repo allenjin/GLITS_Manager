@@ -1,7 +1,10 @@
 package com.grandland.glits.ms.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.Map;
 
 /**
  * DataStoreController
@@ -13,8 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/data-store")
 public class DataStoreController {
 
+    @ModelAttribute
+    public void putCommonParams(Map<String, Object> model) {
+        model.put("menuItem", "data-store");
+    }
+
     @RequestMapping("/")
-    public String index(){
+    public String index() {
         return "data-store/index";
     }
 }

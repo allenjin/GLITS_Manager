@@ -11,7 +11,7 @@
 .navbar {
   position: relative;
   min-height: @navbar-height; // Ensure a navbar always shows (e.g., without a .navbar-brand in collapsed mode)
-  margin-bottom: @navbar-margin-bottom;
+  //margin-bottom: @navbar-margin-bottom;
   // border: 1px solid transparent;
 
   // Prevent floats from breaking the navbar
@@ -394,10 +394,11 @@
 // Default navbar
 .navbar-default {
   background-color: @navbar-default-bg;
-  // border-color: @navbar-default-border;
-
+  border-bottom: 1px solid @navbar-default-border;
   .navbar-brand {
     color: @navbar-default-brand-color;
+    width: @glms-sidebar-width;
+    border-right: 1px solid @navbar-default-border;
     &:hover,
     &:focus {
       color: @navbar-default-brand-hover-color;

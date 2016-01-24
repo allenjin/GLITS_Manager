@@ -10,6 +10,9 @@
 <div class="container">
     <%@include file="../common/sidebar.jsp"%>
     <div class="main">
+        <c:forEach items="${page.content}" var="host">
+
+        </c:forEach>
     </div>
 </div>
 <%@include file="../common/footer.jsp" %>
