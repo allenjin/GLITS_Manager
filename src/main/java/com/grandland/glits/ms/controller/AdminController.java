@@ -3,7 +3,7 @@ package com.grandland.glits.ms.controller;
 import com.grandland.glits.ms.domain.User;
 import com.grandland.glits.ms.json.OperationResult;
 import com.grandland.glits.ms.service.UserService;
-import com.grandland.glits.ms.utils.MessageUtils;
+import com.grandland.glits.ms.utils.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,9 +51,9 @@ public class AdminController {
         else{
             try{
                 User r= userService.addUser(name, tel, mail);
-                opResult = new OperationResult(false, MessageUtils.SUCCESS_REGISTER);
+                opResult = new OperationResult(false, MessageUtil.SUCCESS_REGISTER);
             } catch (Exception e){
-                opResult = new OperationResult(true, MessageUtils.ERROR_SQL);
+                opResult = new OperationResult(true, MessageUtil.ERROR_SQL);
             }
         }
         mav.addObject("opResult",opResult);

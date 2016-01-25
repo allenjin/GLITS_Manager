@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@include file="../common/global.jsp" %>
 <!DOCTYPE html>
 <html>
@@ -8,7 +8,7 @@
 <body>
 <%@include file="../common/header.jsp" %>
 <div class="container">
-    <%@include file="../common/sidebar.jsp"%>
+    <%@include file="../common/sidebar.jsp" %>
     <div class="main">
         <div class="operation-wrapper">
             <button class="btn btn-primary btn-sm" id="addBtn">
@@ -19,25 +19,15 @@
         <table class="table gl-table">
             <thead>
             <tr>
-                <th>主机名</th>
-                <th>IP地址</th>
-                <th>所属机架</th>
-                <th>角色列表</th>
-                <th style="width: 120px;text-align: center">操作</th>
+                <th>服务名称</th>
+                <th style="width:120px;text-align: center">操作</th>
             </tr>
             </thead>
             <tbody>
             <c:if test="${page.totalPages > 0}">
-                <c:forEach items="${page.content}" var="host">
+                <c:forEach items="${page.content}" var="service">
                     <tr>
-                        <td>${host.hostName}</td>
-                        <td>${host.ipAddress}</td>
-                        <td>${host.rack.rackName}</td>
-                        <td>
-                            <c:forEach items="${host.roles}" var="role">
-                                ${role.name},
-                            </c:forEach>
-                        </td>
+                        <td>${service.name}</td>
                         <td>
                             <button class="btn btn-info btn-xs modify-btn">
                                 <span class="glyphicon glyphicon-edit"></span>修改
@@ -52,7 +42,7 @@
             </tbody>
             <tfoot>
             <tr>
-                <td colspan="5">
+                <td colspan="2">
                     <div class="pull-right">
                         <nav>
                             <div class="pagination-info">
@@ -60,17 +50,17 @@
                             </div>
                             <ul class="pagination pagination-sm gl-pagination">
                                 <li  <c:if test="${0 eq page.number}">class="disabled"</c:if>>
-                                    <a href="${ctx}/management/hosts?page=0" aria-label="Previous">
+                                    <a href="${ctx}/management/services?page=0" aria-label="Previous">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>
                                 <c:forEach begin="0" end="${page.totalPages - 1}" varStatus="status">
                                     <li  <c:if test="${status.index eq page.number}">class="active"</c:if>>
-                                        <a href="${ctx}/management/hosts?page=${status.index}">${status.index + 1}</a>
+                                        <a href="${ctx}/management/services?page=${status.index}">${status.index + 1}</a>
                                     </li>
                                 </c:forEach>
                                 <li  <c:if test="${page.number eq page.totalPages-1}">class="disabled"</c:if>>
-                                    <a href="${ctx}/management/hosts?page=${page.totalPages-1}" aria-label="Next">
+                                    <a href="${ctx}/management/services?page=${page.totalPages-1}" aria-label="Next">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
                                 </li>

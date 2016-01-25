@@ -3,7 +3,7 @@ package com.grandland.glits.ms.controller;
 import com.grandland.glits.ms.domain.User;
 import com.grandland.glits.ms.json.OperationResult;
 import com.grandland.glits.ms.service.UserService;
-import com.grandland.glits.ms.utils.MessageUtils;
+import com.grandland.glits.ms.utils.MessageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,9 +68,9 @@ public class SelfSettingController {
                 user.setTel(tel);
                 user.setMail(mail);
                 userService.save(user);
-                opResult = new OperationResult(false, MessageUtils.SUCCESS_UPDATE);
+                opResult = new OperationResult(false, MessageUtil.SUCCESS_UPDATE);
             } catch (Exception e) {
-                opResult = new OperationResult(true, MessageUtils.ERROR_SQL);
+                opResult = new OperationResult(true, MessageUtil.ERROR_SQL);
             }
         }
         user = userService.findUser(user.getId());
@@ -100,17 +100,17 @@ public class SelfSettingController {
                 //update
                 try {
                     userService.changePassword(((User) userDetails).getId(), nPassword);
-                    opResult = new OperationResult(false, MessageUtils.SUCCESS_UPDATE);
+                    opResult = new OperationResult(false, MessageUtil.SUCCESS_UPDATE);
                 } catch (Exception e) {
-                    opResult = new OperationResult(true, MessageUtils.ERROR_SQL);
+                    opResult = new OperationResult(true, MessageUtil.ERROR_SQL);
                 }
 
             } catch (AuthenticationException e) {
                 LOG.error(e.getMessage(), e);
-                opResult = new OperationResult(true, MessageUtils.ERROR_PASSWORD_WRONG);
+                opResult = new OperationResult(true, MessageUtil.ERROR_PASSWORD_WRONG);
             }
         } else {
-            opResult = new OperationResult(true, MessageUtils.ERROR_PASSWORD_NOT_EQUAL);
+            opResult = new OperationResult(true, MessageUtil.ERROR_PASSWORD_NOT_EQUAL);
         }
         mav.addObject("opResult", opResult);
         return mav;

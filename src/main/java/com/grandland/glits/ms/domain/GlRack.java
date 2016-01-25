@@ -21,7 +21,7 @@ public class GlRack {
     @Column(name = "rack_name", nullable = false, unique = true)
     private String rackName;    //机架名称
 
-    private String  description;    //机架描述,具体物理位置
+    private String description;    //机架描述,具体物理位置
 
     @OneToMany(mappedBy = "rack", fetch = FetchType.EAGER)
     private Set<GlHost> hosts;

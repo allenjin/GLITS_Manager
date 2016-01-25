@@ -19,18 +19,17 @@ html, body, .container, .sidebar, .main {
     padding: 0;
     list-style: none;
 
-    .active {
-      a {
-        background-color: #3a4267;
-        color: #fff;
-        border-color: @glms-main-color;
-      }
-      span {
-        color: @glms-main-color;
-      }
-    }
-
     li {
+      &.active {
+        a {
+          background-color: @sidebar-item-bg-active;
+          color: #fff;
+          border-color: @glms-main-color;
+        }
+        span {
+          color: @glms-main-color;
+        }
+      }
       a {
         display: block;
         text-align: center;
@@ -40,7 +39,7 @@ html, body, .container, .sidebar, .main {
         border-right: 5px solid transparent;
         margin-bottom: 1px;
         &:hover {
-          background-color: #3a4267;
+          background-color: @sidebar-item-bg-hover;
           color: #fff;
         }
       }
@@ -65,6 +64,7 @@ html, body, .container, .sidebar, .main {
 }
 
 .main {
+  position: relative;
   padding: 30px 10px;
   background-color: #fcfcfe;
   overflow: scroll;

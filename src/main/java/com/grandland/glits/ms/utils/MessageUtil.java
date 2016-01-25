@@ -5,7 +5,7 @@ package com.grandland.glits.ms.utils;
  * copy from lyits web
  * @author yestin
  */
-public class MessageUtils {
+public class MessageUtil {
 
     public static final String ERROR_SQL = "数据库错误,请稍后重试";
 
