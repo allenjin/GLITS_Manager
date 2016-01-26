@@ -35,7 +35,6 @@
         netInfoBuild();
 
         function processInfoBuild(){
-            console.log(${psInfo});
             var psInfos = [];
             var dataArray = ${psInfo};
             var titles = ["进程号", "进程名", "%CPU", "%MEM", "运行时间", "用户", "状态"]
@@ -158,7 +157,7 @@
         }
 
         function metricPanelBuild(title, content){
-            var panel = '<div class="panel panel-info gl-panel">';
+            var panel = '<div class="panel gl-panel">';
             panel += '<div class="panel-heading">' + title + '</div>';
             panel += '<div class="panel-body">' + content + '</div>';
             panel += '</div>';

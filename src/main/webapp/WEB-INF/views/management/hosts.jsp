@@ -11,7 +11,7 @@
     <%@include file="../common/sidebar.jsp"%>
     <div class="main">
         <div class="operation-wrapper">
-            <button class="btn btn-primary btn-sm" id="addBtn">
+            <button class="btn btn-custom btn-sm" id="addBtn">
                 <span class="glyphicon glyphicon-plus"></span>添加
             </button>
         </div>
@@ -23,7 +23,7 @@
                 <th>IP地址</th>
                 <th>所属机架</th>
                 <th>角色列表</th>
-                <th style="width: 120px;text-align: center">操作</th>
+                <th class="op-th">操作</th>
             </tr>
             </thead>
             <c:if test="${page.totalPages > 0}">

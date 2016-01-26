@@ -57,6 +57,7 @@ public class AdminController {
             switch (isEnableo) {
                 case 1:
                     isEnable = false;
+                    break;
                 case 0:
                     isEnable = true;
             }
@@ -72,7 +73,7 @@ public class AdminController {
         }
         searchParams.put("name", name);
         searchParams.put("userRole", role);
-        searchParams.put("isEanble",isEnable);
+        searchParams.put("isEnable",isEnable);
         Page<User> result = userService.queryUsers(searchParams,page,size);
         mav.addObject("page", result);
         mav.addObject("params", searchParams);

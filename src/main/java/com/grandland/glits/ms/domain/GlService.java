@@ -1,5 +1,7 @@
 package com.grandland.glits.ms.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -26,10 +28,12 @@ public class GlService {
 
     private String description;
 
-    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(mappedBy = "service")
     private Set<GlRole> roles;
 
-    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(mappedBy = "service")
     private Set<GlCommand> commands;
 
     public Integer getId() {
@@ -85,8 +89,6 @@ public class GlService {
         return "GlService{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", roles=" + roles +
-                ", commands=" + commands +
                 ", displayName=" + displayName +
                 ", description=" + description +
                 '}';

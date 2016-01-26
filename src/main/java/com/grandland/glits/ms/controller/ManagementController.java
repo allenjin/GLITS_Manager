@@ -1,10 +1,13 @@
 package com.grandland.glits.ms.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grandland.glits.ms.dao.GlHostDAO;
 import com.grandland.glits.ms.dao.GlRackDAO;
 import com.grandland.glits.ms.dao.GlRoleDAO;
 import com.grandland.glits.ms.dao.GlSerivceDAO;
 import com.grandland.glits.ms.domain.GlRack;
+import com.grandland.glits.ms.domain.GlRole;
 import com.grandland.glits.ms.json.OperationResult;
 import com.grandland.glits.ms.utils.MessageUtil;
 import com.grandland.glits.ms.utils.StringUtil;
@@ -45,7 +48,6 @@ public class ManagementController {
 
     private static final String BASE_ROOT = "management/";
 
-
     @ModelAttribute
     public void putCommonParams(Map<String, Object> model) {
         model.put("menuItem", "management");
@@ -73,10 +75,13 @@ public class ManagementController {
     }
 
     @RequestMapping("/roles")
-    public String roles(@RequestParam(name = "page", defaultValue = "0") int page, Map model) {
+    public String roles(@RequestParam(name = "page", defaultValue = "0") int page, Map model) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
         Pageable pageable = new PageRequest(page, 15);
         model.put("activeTab", "roles");
         model.put("page", glRoleDAO.findAll(pageable));
+        model.put("serviceList", mapper.writeValueAsString(glSerivceDAO.findAll()));
+        model.put("categoryList", mapper.writeValueAsString(GlRole.PsCategory.values()));
         return BASE_ROOT + "roles";
     }
 

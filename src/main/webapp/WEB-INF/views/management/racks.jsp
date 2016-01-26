@@ -11,7 +11,7 @@
     <%@include file="../common/sidebar.jsp" %>
     <div class="main">
         <div class="operation-wrapper">
-            <button class="btn btn-primary btn-sm" id="addBtn">
+            <button class="btn btn-custom btn-sm" id="addBtn">
                 <span class="glyphicon glyphicon-plus"></span>添加
             </button>
         </div>
@@ -21,11 +21,11 @@
             <tr>
                 <th>机架名称</th>
                 <th>机架描述</th>
-                <th style="width:120px;text-align:center">操作</th>
+                <th class="op-th">操作</th>
             </tr>
             </thead>
             <c:if test="${page.totalPages > 0}">
-            <tbody>
+                <tbody>
                 <c:forEach items="${page.content}" var="rack">
                     <tr data-id="${rack.id}">
                         <td>${rack.rackName}</td>
@@ -40,37 +40,37 @@
                         </td>
                     </tr>
                 </c:forEach>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td colspan="3">
-                    <div class="pull-right">
-                        <nav>
-                            <div class="pagination-info">
-                                <span>共有${page.totalElements}条</span>
-                            </div>
-                            <ul class="pagination pagination-sm gl-pagination">
-                                <li <c:if test="${0 eq page.number}">class="disabled"</c:if>>
-                                    <a href="${ctx}/management/racks?page=0" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-                                <c:forEach begin="0" end="${page.totalPages - 1}" varStatus="status">
-                                    <li <c:if test="${status.index eq page.number}">class="active"</c:if>>
-                                        <a href="${ctx}/management/racks?page=${status.index}">${status.index + 1}</a>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="3">
+                        <div class="pull-right">
+                            <nav>
+                                <div class="pagination-info">
+                                    <span>共有${page.totalElements}条</span>
+                                </div>
+                                <ul class="pagination pagination-sm gl-pagination">
+                                    <li <c:if test="${0 eq page.number}">class="disabled"</c:if>>
+                                        <a href="${ctx}/management/racks?page=0" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
                                     </li>
-                                </c:forEach>
-                                <li <c:if test="${page.number eq page.totalPages-1}">class="disabled"</c:if>>
-                                    <a href="${ctx}/management/racks?page=${page.totalPages-1}" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </td>
-            </tr>
-            </tfoot>
+                                    <c:forEach begin="0" end="${page.totalPages - 1}" varStatus="status">
+                                        <li <c:if test="${status.index eq page.number}">class="active"</c:if>>
+                                            <a href="${ctx}/management/racks?page=${status.index}">${status.index + 1}</a>
+                                        </li>
+                                    </c:forEach>
+                                    <li <c:if test="${page.number eq page.totalPages-1}">class="disabled"</c:if>>
+                                        <a href="${ctx}/management/racks?page=${page.totalPages-1}" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </td>
+                </tr>
+                </tfoot>
             </c:if>
         </table>
         <c:if test="${page.totalPages == 0}">

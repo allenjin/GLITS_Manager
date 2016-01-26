@@ -1,7 +1,10 @@
 //custom widget, such as chart, table
 .gl-panel {
+  border-color: @glms-border-color;
   .panel-heading {
     position: relative;
+    background-color: @glms-widget-bg;
+    color: #fff;
     span.refresh-time {
       float: right;
       padding: 0 20px;
@@ -17,13 +20,17 @@
   border: 1px solid @glms-border-color;
   margin-bottom: 0;
   thead {
-    background-color: lighten(@glms-sidebar-bg, 20%);
-    border: 1px solid lighten(@glms-sidebar-bg, 20%);
+    background-color:  @glms-widget-bg;
+    border: 1px solid  @glms-widget-bg;
     margin-bottom: -1px;
     color: #fff;
     tr {
       th {
         border-bottom: none;
+        &.op-th{
+          width: 120px;
+          text-align: center;
+        }
       }
     }
 
@@ -51,7 +58,7 @@
     display: block;
     width: 200px;
     padding: 30px 50px;
-    background-color: #b4b9ef;
+    background-color: #c2bfef;
     font-weight: bold;
     color: #fff;
     margin: 0 auto;
