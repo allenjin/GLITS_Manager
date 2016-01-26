@@ -30,11 +30,12 @@ import java.util.Map;
 public class ManagementController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ManagementController.class);
-    @Autowired
-    private GlRackDAO glRackDAO;
 
     @Autowired
     private GlHostDAO glHostDAO;
+
+    @Autowired
+    private GlRackDAO glRackDAO;
 
     @Autowired
     private GlRoleDAO glRoleDAO;
@@ -57,7 +58,7 @@ public class ManagementController {
 
     @RequestMapping("/racks")
     public String racks(@RequestParam(name = "page", defaultValue = "0") int page, Map<String, Object> model) {
-        Pageable pageable = new PageRequest(page, 2);
+        Pageable pageable = new PageRequest(page, 15);
         model.put("activeTab", "racks");
         model.put("page", glRackDAO.findAll(pageable));
         return BASE_ROOT + "racks";
@@ -87,44 +88,5 @@ public class ManagementController {
         return BASE_ROOT + "services";
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/rack/add", method = RequestMethod.POST)
-    public OperationResult addRack(GlRack rack) {
-        OperationResult result = new OperationResult();
-        LOG.debug(rack.toString());
-        if (rack != null) {
-            if (StringUtil.isEmpty(rack.getRackName())) {
-                result.setHasError(true);
-                result.setMessage("机架名称不能为空");
-            } else {
-                try {
-                    glRackDAO.save(rack);
-                    result.setHasError(false);
-                    result.setMessage(MessageUtil.SUCCESS_OP);
-                } catch (Exception e) {
-                    LOG.error(e.getMessage(), e);
-                    result.setHasError(true);
-                    result.setMessage(MessageUtil.ERROR_SQL);
-                }
-            }
-        }
-        return result;
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/rack/del", method = RequestMethod.POST)
-    public OperationResult delRack(@RequestParam("id") int id) {
-        OperationResult result = new OperationResult();
-        try {
-            glRackDAO.delete(id);
-            result.setHasError(false);
-            result.setMessage(MessageUtil.SUCCESS_DELETE);
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            result.setHasError(true);
-            result.setMessage(MessageUtil.ERROR_SQL);
-        }
-        return result;
-    }
 
 }

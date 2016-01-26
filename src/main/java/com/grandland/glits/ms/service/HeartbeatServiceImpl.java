@@ -107,7 +107,7 @@ public class HeartbeatServiceImpl implements HeartbeatService.Iface {
                 process.setId(role.getId());
                 process.setName(role.getName());
                 process.setRunning(role.isRunning());
-                process.setAuto_restart(role.isAutoRetart());
+                process.setAuto_restart(role.isAutoRestart());
                 process.setScript(role.getScript());
                 process.setType(role.getCategory().toString());
                 processList.add(process);

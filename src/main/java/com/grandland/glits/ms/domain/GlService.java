@@ -21,10 +21,15 @@ public class GlService {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "service")
+    @Column(name = "display_name", nullable = false)
+    private String displayName; //显示名称
+
+    private String description;
+
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
     private Set<GlRole> roles;
 
-    @OneToMany(mappedBy = "service")
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
     private Set<GlCommand> commands;
 
     public Integer getId() {
@@ -59,6 +64,22 @@ public class GlService {
         this.commands = commands;
     }
 
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public String toString() {
         return "GlService{" +
@@ -66,6 +87,8 @@ public class GlService {
                 ", name='" + name + '\'' +
                 ", roles=" + roles +
                 ", commands=" + commands +
+                ", displayName=" + displayName +
+                ", description=" + description +
                 '}';
     }
 }

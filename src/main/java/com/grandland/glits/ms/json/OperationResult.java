@@ -1,19 +1,17 @@
 package com.grandland.glits.ms.json;
 
-import java.util.List;
-
 /**
  * OperationResult 存放后台执行结果
  * Created by lwz on 2016/1/22.
  */
-public class OperationResult {
+public class OperationResult<T> {
 
 
     private boolean hasError;
 
     private String message;
 
-    private List<String> list;
+    private T bean;
 
     public boolean isHasError() {
         return hasError;
@@ -40,12 +38,12 @@ public class OperationResult {
         this.message = message;
     }
 
-    public List<String> getList() {
-        return list;
+    public T getBean() {
+        return bean;
     }
 
-    public void setList(List<String> list) {
-        this.list = list;
+    public void setBean(T bean) {
+        this.bean = bean;
     }
 
     @Override
