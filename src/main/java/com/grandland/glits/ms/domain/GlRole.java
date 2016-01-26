@@ -21,27 +21,29 @@ public class GlRole {
     @Column(nullable = false, unique = true)
     private String name;    //机器角色名称,相当于进程名称
 
-    @Column(name = "display_name")
+    @Column(name = "display_name", nullable = false)
     private String displayName; //显示名称
+
+    private String description; //功能描述
 
     private boolean running = true; //是否运行
 
     @Column(name = "auto_start")
-    private boolean autoRetart = false; //是否自动重启
+    private boolean autoRestart = false; //是否自动重启
 
     private String script;  //程序主脚本,用于启动,停止,重启任务
 
     @Enumerated(EnumType.STRING)
     private PsCategory category;
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     private Set<GlCommand> commands;
 
     @ManyToOne
     @JoinColumn(name = "service_id", referencedColumnName = "id")
     private GlService service;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST}, fetch= FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch= FetchType.LAZY)
     @JoinTable(name = "gl_host_role",
         joinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")},
         inverseJoinColumns = {@JoinColumn(name = "host_id", referencedColumnName = "id")})
@@ -118,12 +120,12 @@ public class GlRole {
         this.running = running;
     }
 
-    public boolean isAutoRetart() {
-        return autoRetart;
+    public boolean isAutoRestart() {
+        return autoRestart;
     }
 
-    public void setAutoRetart(boolean autoRetart) {
-        this.autoRetart = autoRetart;
+    public void setAutoRestart(boolean autoRestart) {
+        this.autoRestart = autoRestart;
     }
 
     public String getScript() {
@@ -142,6 +144,14 @@ public class GlRole {
         this.category = category;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public String toString() {
         return "GlRole{" +
@@ -149,9 +159,10 @@ public class GlRole {
                 ", name='" + name + '\'' +
                 ", displayName='" + displayName + '\'' +
                 ", running=" + running +
-                ", autoRetart=" + autoRetart +
+                ", autoRestart=" + autoRestart +
                 ", script='" + script + '\'' +
                 ", category=" + category +
+                ", description=" + description +
                 '}';
     }
 }

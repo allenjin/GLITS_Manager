@@ -26,8 +26,8 @@
                 <th style="width: 120px;text-align: center">操作</th>
             </tr>
             </thead>
-            <tbody>
             <c:if test="${page.totalPages > 0}">
+            <tbody>
                 <c:forEach items="${page.content}" var="host">
                     <tr>
                         <td>${host.hostName}</td>
@@ -48,7 +48,6 @@
                         </td>
                     </tr>
                 </c:forEach>
-            </c:if>
             </tbody>
             <tfoot>
             <tr>
@@ -80,6 +79,7 @@
                 </td>
             </tr>
             </tfoot>
+            </c:if>
         </table>
         <c:if test="${page.totalPages == 0}">
             <div class="gl-table-no-result">

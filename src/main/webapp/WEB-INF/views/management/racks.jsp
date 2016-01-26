@@ -24,8 +24,8 @@
                 <th style="width:120px;text-align:center">操作</th>
             </tr>
             </thead>
-            <tbody>
             <c:if test="${page.totalPages > 0}">
+            <tbody>
                 <c:forEach items="${page.content}" var="rack">
                     <tr data-id="${rack.id}">
                         <td>${rack.rackName}</td>
@@ -40,7 +40,6 @@
                         </td>
                     </tr>
                 </c:forEach>
-            </c:if>
             </tbody>
             <tfoot>
             <tr>
@@ -51,17 +50,17 @@
                                 <span>共有${page.totalElements}条</span>
                             </div>
                             <ul class="pagination pagination-sm gl-pagination">
-                                <li  <c:if test="${0 eq page.number}">class="disabled"</c:if>>
+                                <li <c:if test="${0 eq page.number}">class="disabled"</c:if>>
                                     <a href="${ctx}/management/racks?page=0" aria-label="Previous">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>
                                 <c:forEach begin="0" end="${page.totalPages - 1}" varStatus="status">
-                                    <li  <c:if test="${status.index eq page.number}">class="active"</c:if>>
+                                    <li <c:if test="${status.index eq page.number}">class="active"</c:if>>
                                         <a href="${ctx}/management/racks?page=${status.index}">${status.index + 1}</a>
                                     </li>
                                 </c:forEach>
-                                <li  <c:if test="${page.number eq page.totalPages-1}">class="disabled"</c:if>>
+                                <li <c:if test="${page.number eq page.totalPages-1}">class="disabled"</c:if>>
                                     <a href="${ctx}/management/racks?page=${page.totalPages-1}" aria-label="Next">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
@@ -72,6 +71,7 @@
                 </td>
             </tr>
             </tfoot>
+            </c:if>
         </table>
         <c:if test="${page.totalPages == 0}">
             <div class="gl-table-no-result">
@@ -139,7 +139,7 @@
         $('body').on('click', 'button#submit-btn', function (e) {
             e.preventDefault();
             var form = $(this).parents('form');
-            var url = "${ctx}/management/rack/add";
+            var url = "${ctx}/rack/add";
             ajaxRequest(url, form.serialize(), function (result) {
                 if (result.hasError) {
                     displayAlert(result.message, 'danger');
@@ -162,7 +162,7 @@
                 okValue: '确定',
                 ok: function () {
                     var data = "id=" + rackId;
-                    var url = "${ctx}/management/rack/del";
+                    var url = "${ctx}/rack/del";
                     ajaxRequest(url, data, function (result) {
                         if (result.hasError) {
                             displayAlert(result.message, 'danger');

@@ -29,4 +29,6 @@ public class MessageUtil {
 
     public static final String SUCCESS_REGISTER = "注册成功";
 
+    public static final String ERROR_VIOLATION = "违反数据完整性,出现冲突";
+
 }
