@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
@@ -29,6 +30,9 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
+
+    @Autowired
+    private DataSource dataSource;
 
     @Override
     @Bean
@@ -66,9 +70,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         http.csrf().disable().formLogin().loginPage("/login")
                 .loginProcessingUrl("/logon")
                 .defaultSuccessUrl("/")
-                .permitAll()
-                .successHandler(loginSuccessHandler())//登录成功后可使用loginSuccessHandler()存储用户信息
-                .failureHandler(new SimpleUrlAuthenticationFailureHandler());
+                .failureUrl("/login?error")
+                .permitAll();
+//                .successHandler(loginSuccessHandler())//登录成功后可使用loginSuccessHandler()存储用户信息
+//                .failureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error"));
 
         // 自定义注销
         http.logout().logoutUrl("/logout")
@@ -79,11 +84,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .invalidateHttpSession(true);
 
          //session管理
-        http.sessionManagement().sessionFixation().changeSessionId()
-                .maximumSessions(1).expiredUrl("/");
+        http.sessionManagement()
+                .sessionFixation().changeSessionId()
+                .maximumSessions(10).maxSessionsPreventsLogin(false).expiredUrl("/login?expired");
 
         //remember-me配置
-//        http.rememberMe().tokenValiditySeconds(360000).tokenRepository(tokenRepository());
+        http.rememberMe().tokenValiditySeconds(360000).tokenRepository(tokenRepository());
     }
 
 
@@ -93,13 +99,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     }
 
     @Bean
-    public SavedRequestAwareAuthenticationSuccessHandler loginSuccessHandler(){
-        return new SavedRequestAwareAuthenticationSuccessHandler();
+    public JdbcTokenRepositoryImpl tokenRepository(){
+        JdbcTokenRepositoryImpl j = new JdbcTokenRepositoryImpl();
+        j.setDataSource(dataSource);
+        return j;
     }
-//    @Bean
-//    public JdbcTokenRepositoryImpl tokenRepository(){
-//        JdbcTokenRepositoryImpl j = new JdbcTokenRepositoryImpl();
-//        j.setDataSource(new JdbcTemplate().getDataSource());
-//        return j;
-//    }
+
+    @Bean
+    public SavedRequestAwareAuthenticationSuccessHandler loginSuccessHandler(){
+        SavedRequestAwareAuthenticationSuccessHandler handler = new SavedRequestAwareAuthenticationSuccessHandler();
+        handler.setDefaultTargetUrl("/");
+        //handler.setRequestCache();
+        return handler;
+    }
 }

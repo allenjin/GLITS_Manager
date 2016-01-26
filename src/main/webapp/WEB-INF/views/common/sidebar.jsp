@@ -25,12 +25,14 @@
                 定时任务
             </a>
         </li>
+        <sec:authorize access="hasRole('ROLE_ADMIN')">
         <li <c:if test="${menuItem eq 'management'}">class="active"</c:if>>
-            <a href="${ctx}/management/">
+            <a href="${ctx}/sys/admin/yhlb">
                 <span class="glyphicon glyphicon-cog"></span>
                 系统管理
             </a>
         </li>
+        </sec:authorize>
     </ul>
     <div class="copyright">
         <p>Copyright &copy; 2015 <br />

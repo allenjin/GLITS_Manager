@@ -8,37 +8,32 @@
 <body>
 <%@include file="../../common/header.jsp"%>
 <div class="container">
-    <c:if test="${!empty opResult }">
-        <c:if test="${!opResult.hasError }">
-            <div class="op-success">
-                <span>${opResult.message }</span>
+    <%@include file="../../common/sidebar.jsp"%>
+    <div class="main">
+        <form action="/sys/admin/adduser"  method="post">
+            <div class="form-group">
+                <label for="name">用户名</label>
+                <input type="text" id="name" name="name"/>
             </div>
-        </c:if>
-        <c:if test="${opResult.hasError }">
-            <div class="op-error">
-                <span>${opResult.message }</span>
+            <div class="form-group">
+                <label for="mail">邮件</label>
+                <input type="email" id="mail" name="mail"/>
             </div>
-        </c:if>
-    </c:if>
-    <form action="/sys/admin/adduser"  method="post">
-        <div class="form-group">
-            <label for="name">用户名</label>
-            <input type="text" id="name" name="name" class="form-control"/>
-        </div>
-        <!--<div class="form-group">
-            <label for="password">密码</label>
-            <input type="password" id="password" name="password" class="form-control" />
-        </div>-->
-        <div class="form-group">
-            <label for="mail">邮件</label>
-            <input type="text" id="mail" name="mail" class="form-control" />
-        </div>
-        <div class="form-group">
-            <label for="tel">电话</label>
-            <input type="text" id="tel" name="tel" class="form-control" />
-        </div>
-        <button type="submit" class="btn btn-primary btn-block">添加</button>
-    </form>
+            <div class="form-group">
+                <label for="tel">电话</label>
+                <input type="text" id="tel" name="tel"/>
+            </div>
+            <div class="form-group">
+                <label for="user-role">用户角色</label>
+                <select id="user-role" name="user-role" >
+                    <c:forEach var="t" items="${userRoles }">
+                        <option value="${t}">${t.name }</option>
+                    </c:forEach>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">添加</button>
+        </form>
+    </div>
 </div>
 <%@include file="../../common/footer.jsp"%>
 <%@include file="../../common/script.jsp"%>

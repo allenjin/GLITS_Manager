@@ -15,9 +15,17 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#">
-                            <span class="glyphicon glyphicon-user"></span>
-                            <sec:authentication property="principal.name"/>
+                        <div class="dropdown">
+                            <a href="#" class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <span class="glyphicon glyphicon-user"></span>
+                                <sec:authentication property="principal.name"/>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                <li><a href="${ctx}/sys/self/info">个人信息</a></li>
+                                <li><a href="${ctx}/sys/self/password">密码修改</a></li>
+                            </ul>
+                        </div>
+
                         </a>
                     </li>
                     <li>

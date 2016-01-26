@@ -1,6 +1,7 @@
 package com.grandland.glits.ms.controller;
 
 import com.grandland.glits.ms.config.SiteConfig;
+import com.grandland.glits.ms.exception.AlreadyExistException;
 import com.grandland.glits.ms.exception.FieldEmptyException;
 import com.grandland.glits.ms.json.OperationResult;
 import com.grandland.glits.ms.utils.MessageUtil;
@@ -9,9 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.web.bind.annotation.*;
-
-import java.sql.SQLException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * ControllerAdvice
@@ -63,4 +65,13 @@ public class GlControllerAdvice {
         return result;
     }
 
+    @ExceptionHandler({AlreadyExistException.class})
+    @ResponseBody
+    public OperationResult handleAlreadyExistException(AlreadyExistException al) {
+        OperationResult result = new OperationResult();
+        result.setHasError(true);
+        result.setMessage(al.getMessage());
+        LOG.error("AlreadyExistException: {}", al.getMessage(), al);
+        return result;
+    }
 }

@@ -25,6 +25,8 @@ public class MessageUtil {
 
     public static final String SUCCESS_DELETE = "删除成功";
 
+    public static final String SUCESS_RESET = "成功重置密码";
+
     public static final String SUCCESS_OP = "操作成功";
 
     public static final String SUCCESS_REGISTER = "注册成功";

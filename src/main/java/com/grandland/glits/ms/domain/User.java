@@ -57,6 +57,8 @@ public class User implements UserDetails {
 
     private Date lastLogin;
 
+    private boolean isEnable;
+
     public Long
     getId() {
         return id;
@@ -118,6 +120,14 @@ public class User implements UserDetails {
         this.lastLogin = lastLogin;
     }
 
+    public boolean getIsEnable(){
+        return isEnable;
+    }
+
+    public void setIsEnable(boolean isEnable) {
+        this.isEnable = isEnable;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -161,7 +171,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isEnable;
     }
 
     @Override

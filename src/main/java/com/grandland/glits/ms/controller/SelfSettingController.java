@@ -1,9 +1,11 @@
 package com.grandland.glits.ms.controller;
 
 import com.grandland.glits.ms.domain.User;
+import com.grandland.glits.ms.exception.FieldEmptyException;
 import com.grandland.glits.ms.json.OperationResult;
 import com.grandland.glits.ms.service.UserService;
 import com.grandland.glits.ms.utils.MessageUtil;
+import com.grandland.glits.ms.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,26 +56,19 @@ public class SelfSettingController {
 
     @RequestMapping(value = "/info", method = RequestMethod.POST)
     public ModelAndView doUpdateInfo(@RequestParam("tel") String tel,
-                                     @RequestParam("mail") String mail) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                                     @RequestParam("mail") String mail) throws FieldEmptyException{
         ModelAndView mav = new ModelAndView("/sys/self/self_info");
-        User user = userService.findUser(((User) userDetails).getId());
         OperationResult opResult = null;
-        if (tel.trim().equals("")) {
-            opResult = new OperationResult(true, "联系电话不能为空");
-        } else if (mail.trim().equals("")) {
-            opResult = new OperationResult(true, "mail不能为空");
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findUser(((User) userDetails).getId());
+        if(StringUtil.isEmpty(tel)){
+            throw new FieldEmptyException("联系电话不能为空");
+        } else if(StringUtil.isEmpty(mail)){
+            throw new FieldEmptyException("email不能为空");
         } else {
-            try {
-                user.setTel(tel);
-                user.setMail(mail);
-                userService.save(user);
-                opResult = new OperationResult(false, MessageUtil.SUCCESS_UPDATE);
-            } catch (Exception e) {
-                opResult = new OperationResult(true, MessageUtil.ERROR_SQL);
-            }
+            user = userService.editUser(user,tel,mail);
+            opResult = new OperationResult(false, MessageUtil.SUCCESS_UPDATE);
         }
-        user = userService.findUser(user.getId());
         mav.addObject("opResult", opResult);
         mav.addObject("user", user);
         return mav;
@@ -93,20 +88,10 @@ public class SelfSettingController {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         LOG.debug(userDetails.toString());
         if (nPassword.equals(nPassword2)) {
-            Authentication auth = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), oPassword, userDetails.getAuthorities());
-            try {
-                Authentication result = authenticationManager.authenticate(auth);
-                SecurityContextHolder.getContext().setAuthentication(result);
-                //update
-                try {
-                    userService.changePassword(((User) userDetails).getId(), nPassword);
-                    opResult = new OperationResult(false, MessageUtil.SUCCESS_UPDATE);
-                } catch (Exception e) {
-                    opResult = new OperationResult(true, MessageUtil.ERROR_SQL);
-                }
-
-            } catch (AuthenticationException e) {
-                LOG.error(e.getMessage(), e);
+            if(encoder.matches(oPassword,userDetails.getPassword())){
+                userService.changePassword(((User) userDetails).getId(), nPassword);
+                opResult = new OperationResult(false, MessageUtil.SUCCESS_UPDATE);
+            }else{
                 opResult = new OperationResult(true, MessageUtil.ERROR_PASSWORD_WRONG);
             }
         } else {

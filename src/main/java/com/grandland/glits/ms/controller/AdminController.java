@@ -1,9 +1,12 @@
 package com.grandland.glits.ms.controller;
 
 import com.grandland.glits.ms.domain.User;
+import com.grandland.glits.ms.exception.AlreadyExistException;
+import com.grandland.glits.ms.exception.FieldEmptyException;
 import com.grandland.glits.ms.json.OperationResult;
 import com.grandland.glits.ms.service.UserService;
 import com.grandland.glits.ms.utils.MessageUtil;
+import com.grandland.glits.ms.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -77,63 +81,44 @@ public class AdminController {
     }
 
     //删除用户
-    @RequestMapping(value = "/yhlb/delete",method = RequestMethod.GET)
-    public String deleteUser(@RequestParam("id")Long id, RedirectAttributes attributes){
-        java.lang.String msg = "";
-        OperationResult operationResult = null;
-        try{
-            userService.deleteUser(id);
-            msg = MessageUtil.SUCCESS_DELETE;
-            operationResult = new OperationResult(false, msg);
-        }catch(Exception e){
-            msg = MessageUtil.ERROR_SQL;
-            operationResult = new OperationResult(true, msg);
-            log.error("user delete error: {}", e.getMessage(), e);
-        }
-        attributes.addFlashAttribute("opResult", operationResult);
-        return "redirect:/sys/admin/yhlb";
+    @ResponseBody
+    @RequestMapping(value = "/yhlb/delete",method = RequestMethod.POST)
+    public OperationResult deleteUser(@RequestParam("id")Long id){
+        OperationResult result = new OperationResult();
+        userService.deleteUser(id);
+        result.setHasError(false);
+        result.setMessage(MessageUtil.SUCCESS_DELETE);
+        return result;
 
     }
 
     //重置密码
-    @RequestMapping(value = "/yhlb/rspw",method = RequestMethod.GET)
-    public String resetPassword(@RequestParam("id")Long id, RedirectAttributes attributes) {
-        java.lang.String msg = "";
-        OperationResult operationResult = null;
-        try{
-            User user = userService.findUser(id);
-            userService.changePassword(id, user.getName());
-            msg = MessageUtil.SUCCESS_OP;
-            operationResult = new OperationResult(false, msg);
-        }catch(Exception e){
-            msg = MessageUtil.ERROR_SQL;
-            operationResult = new OperationResult(true, msg);
-            log.error("user delete error: {}", e.getMessage(), e);
-        }
-        attributes.addFlashAttribute("opResult", operationResult);
-        return "redirect:/sys/admin/yhlb";
-
+    @ResponseBody
+    @RequestMapping(value = "/yhlb/rspw",method = RequestMethod.POST)
+    public OperationResult resetPassword(@RequestParam("id")Long id) {
+        OperationResult result = new OperationResult();
+        User user = userService.findUser(id);
+        userService.changePassword(id, user.getName());
+        result.setHasError(false);
+        result.setMessage(MessageUtil.SUCESS_RESET);
+        return result;
     }
 
     //激活或禁用用户
-    @RequestMapping(value = "/yhlb/enable",method = RequestMethod.GET)
-    public String enableUser(@RequestParam("id")Long id,
+    @ResponseBody
+    @RequestMapping(value = "/yhlb/enable",method = RequestMethod.POST)
+    public OperationResult enableUser(@RequestParam("id")Long id,
                                 @RequestParam("isEnable")boolean isEnable, RedirectAttributes attributes) {
-        java.lang.String msg = "";
-        OperationResult operationResult = null;
-        try{
-            userService.enableUser(isEnable, id);
-            msg = MessageUtil.SUCCESS_OP;
-            operationResult = new OperationResult(false, msg);
-        }catch(Exception e){
-            msg = MessageUtil.ERROR_SQL;
-            operationResult = new OperationResult(true, msg);
-            log.error("user delete error: {}", e.getMessage(), e);
-        }
-        attributes.addFlashAttribute("opResult", operationResult);
-        return "redirect:/sys/admin/yhlb";
+
+        OperationResult result = new OperationResult();
+        userService.enableUser(isEnable, id);
+        result.setHasError(false);
+        result.setMessage(MessageUtil.SUCCESS_OP);
+        return result;
 
     }
+
+
     @RequestMapping(value="/adduser",method= RequestMethod.GET)
     public ModelAndView addUser(){
         ModelAndView mav = new ModelAndView("/sys/admin/user_add");
@@ -145,30 +130,28 @@ public class AdminController {
     public ModelAndView doAddUsers(@RequestParam(value="name") String name,
                                    @RequestParam(value="tel") String tel,
                                    @RequestParam(value="mail") String mail,
-                                   @RequestParam(value="user-role")String userRoleStr){
+                                   @RequestParam(value="user-role")String userRoleStr)
+            throws FieldEmptyException,AlreadyExistException{
         ModelAndView mav = new ModelAndView("/sys/admin/user_add");
         mav.addObject("userRoles", User.Role.values());
         OperationResult opResult = null;
-        if(name.trim().equals("")){
-            opResult = new OperationResult(true, "用户名不能为空");
+        if(StringUtil.isEmpty(name)){
+            throw new FieldEmptyException("用户名不能为空");
         }
-        else if(tel.trim().equals("")){
-            opResult = new OperationResult(true, "联系电话不能为空");
+        else if(StringUtil.isEmpty(tel)){
+            throw new FieldEmptyException("联系电话不能为空");
         }
-        else if(mail.trim().equals("")){
-            opResult = new OperationResult(true, "email不能为空");
+        else if(StringUtil.isEmpty(mail)){
+            throw new FieldEmptyException("email不能为空");
         }
         else if(userService.isUserNameExists(name)){
-            opResult = new OperationResult(true, "该用户名已存在，请换个用户名重试");
+            throw new AlreadyExistException("该用户名已存在，请换个用户名重试");
         }
         else{
-            try{
-                User.Role role = User.Role.valueOf(userRoleStr);
-                userService.addUser(name, tel, mail, role);
-                opResult = new OperationResult(false, MessageUtil.SUCCESS_REGISTER);
-            } catch (Exception e){
-                opResult = new OperationResult(true, MessageUtil.ERROR_SQL);
-            }
+            User.Role role = User.Role.valueOf(userRoleStr);
+            userService.addUser(name, tel, mail, role);
+            opResult = new OperationResult(false, MessageUtil.SUCCESS_REGISTER);
+
         }
         mav.addObject("opResult",opResult);
         return mav;

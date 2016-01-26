@@ -6,7 +6,6 @@
     <%@include file="common/head.jsp" %>
     <%@include file="common/script.jsp"%>
     <script type="text/javascript" src="${ctx }/static/js/dialog-min.js"></script>
-    <link rel="stylesheet" href="${ctx}/static/css/ui-dialog.css" type="text/css">
     <style type="text/css">
         .login-form{
             margin: 0 auto;
