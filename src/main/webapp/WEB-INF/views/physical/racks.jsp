@@ -10,7 +10,7 @@
 <div class="container">
     <%@include file="../common/sidebar.jsp"%>
     <div class="main">
-        <ol class="breadcrumb">
+        <ol class="breadcrumb gl-breadcrumb">
             <li>物理视图</li>
         </ol>
     <c:forEach items="${racks}" var="rack">

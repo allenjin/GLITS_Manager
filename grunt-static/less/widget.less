@@ -20,14 +20,14 @@
   border: 1px solid @glms-border-color;
   margin-bottom: 0;
   thead {
-    background-color:  @glms-widget-bg;
+    background-color: @glms-widget-bg;
     border: 1px solid  @glms-widget-bg;
     margin-bottom: -1px;
     color: #fff;
     tr {
       th {
         border-bottom: none;
-        &.op-th{
+        &.op-th {
           width: 120px;
           text-align: center;
         }
@@ -44,8 +44,15 @@
   }
   tfoot {
     tr {
+      td {
+        vertical-align: middle;
+      }
     }
   }
+}
+
+.gl-table-toolbar {
+  padding: 5px 20px;
 }
 
 .gl-table-no-result {
@@ -68,13 +75,13 @@
 .pagination-info {
   display: inline-block;
   position: relative;
-  top: -20px;
+  top: -15px;
   color: @gray-light;
   padding: 0 20px;
 }
 
 .gl-pagination {
-  margin: 10px 0;
+  margin: 5px 0;
   li {
     &.active {
       a {
@@ -110,4 +117,9 @@
   position: absolute;
   padding: 0 20px;
   right: 0;
+}
+
+.gl-breadcrumb {
+  margin: 0;
+  color: @glms-form-color;
 }

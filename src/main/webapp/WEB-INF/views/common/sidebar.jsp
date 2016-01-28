@@ -25,17 +25,23 @@
                 定时任务
             </a>
         </li>
-        <sec:authorize access="hasRole('ROLE_ADMIN')">
         <li <c:if test="${menuItem eq 'management'}">class="active"</c:if>>
-            <a href="${ctx}/sys/admin/yhlb">
-                <span class="glyphicon glyphicon-cog"></span>
-                系统管理
+            <a href="${ctx}/management/">
+                <span class="glyphicon glyphicon-dashboard"></span>
+                平台管理
             </a>
         </li>
+        <sec:authorize access="hasRole('ROLE_ADMIN')">
+            <li <c:if test="${menuItem eq 'settings'}">class="active"</c:if>>
+                <a href="${ctx}/settings/">
+                    <span class="glyphicon glyphicon-cog"></span>
+                    系统设置
+                </a>
+            </li>
         </sec:authorize>
     </ul>
     <div class="copyright">
-        <p>Copyright &copy; 2015 <br />
+        <p>Copyright &copy; 2015 <br/>
             <a href="http://www.gl-data.com">Grandland Inc.</a>
         </p>
     </div>

@@ -10,6 +10,7 @@
   margin: 0;
   padding: 0;
 }
+
 .user-panel-list li {
   float: left;
   padding: 0 10px;
@@ -23,32 +24,32 @@
     }
   }
 }
+
 //header user info drop down
 .dropdown-menu {
   min-width: 100px;
   margin: -10px 0 0;
   padding: 0;
-  li{
+  li {
     padding: 0;
-    a{
+    a {
       line-height: 30px;
     }
   }
 }
-//change button color
-.btn-primary{
-  background-color: @glms-sidebar-bg;
-  border: @glms-sidebar-bg;
-}
 
 //user manage page query related css
-.form-query{
-  display:inline;
-  margin: 0 20px;
-  select,input{
-    width:150px;
-  }
+.form-query {
+  float: left;
 }
-.query-container{
-  margin: 10px 10px;
+
+.gl-form-inline {
+  margin-bottom: 15px;
+
+  .form-group {
+    margin-left: 10px;
+    label{
+      color: @glms-form-color;
+    }
+  }
 }

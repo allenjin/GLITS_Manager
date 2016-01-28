@@ -39,47 +39,47 @@ public class AdminController {
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = "/yhlb", method = RequestMethod.GET)
-    public ModelAndView queryUser(@RequestParam(value = "page",required = false)Integer page,
-                                  @RequestParam(value = "size", required = false)Integer size,
-                                  @RequestParam(value = "name", required = false)String name,
-                                  @RequestParam(value = "userRole",required = false)String userRole,
-                                  @RequestParam(value = "isEnable",required = false)Integer isEnableo, HttpServletRequest request){
-        ModelAndView mav = new ModelAndView("sys/admin/user_list");
-        if(page == null){
-            page = 0;
-        }
-        if(size == null){
-            size = 20;
-        }
-        Boolean isEnable = null;
-        if(isEnableo != null){
-            switch (isEnableo) {
-                case 1:
-                    isEnable = false;
-                    break;
-                case 0:
-                    isEnable = true;
-            }
-        }
-        Map<String,Object> searchParams = new HashMap<>();
-        User.Role role = null;
-        if(request != null){
-            if(userRole != null){//不为空说明前端传来了角色参数
-                if(!userRole.equals("全部")){
-                    role = User.Role.valueOf(userRole);
-                }
-            }
-        }
-        searchParams.put("name", name);
-        searchParams.put("userRole", role);
-        searchParams.put("isEnable",isEnable);
-        Page<User> result = userService.queryUsers(searchParams,page,size);
-        mav.addObject("page", result);
-        mav.addObject("params", searchParams);
-        mav.addObject("userRoles", User.Role.values());
-        return mav;
-    }
+//    @RequestMapping(value = "/yhlb", method = RequestMethod.GET)
+//    public ModelAndView queryUser(@RequestParam(value = "page",required = false)Integer page,
+//                                  @RequestParam(value = "size", required = false)Integer size,
+//                                  @RequestParam(value = "name", required = false)String name,
+//                                  @RequestParam(value = "userRole",required = false)String userRole,
+//                                  @RequestParam(value = "isEnable",required = false)Integer isEnableo, HttpServletRequest request){
+//        ModelAndView mav = new ModelAndView("sys/admin/user_list");
+//        if(page == null){
+//            page = 0;
+//        }
+//        if(size == null){
+//            size = 20;
+//        }
+//        Boolean isEnable = null;
+//        if(isEnableo != null){
+//            switch (isEnableo) {
+//                case 1:
+//                    isEnable = false;
+//                    break;
+//                case 0:
+//                    isEnable = true;
+//            }
+//        }
+//        Map<String,Object> searchParams = new HashMap<>();
+//        User.Role role = null;
+//        if(request != null){
+//            if(userRole != null){//不为空说明前端传来了角色参数
+//                if(!userRole.equals("全部")){
+//                    role = User.Role.valueOf(userRole);
+//                }
+//            }
+//        }
+//        searchParams.put("name", name);
+//        searchParams.put("userRole", role);
+//        searchParams.put("isEnable",isEnable);
+//        Page<User> result = userService.queryUsers(searchParams,page,size);
+//        mav.addObject("page", result);
+//        mav.addObject("params", searchParams);
+//        mav.addObject("userRoles", User.Role.values());
+//        return mav;
+//    }
 
     //删除用户
     @ResponseBody

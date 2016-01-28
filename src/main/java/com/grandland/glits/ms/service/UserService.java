@@ -2,6 +2,8 @@ package com.grandland.glits.ms.service;
 
 import com.grandland.glits.ms.dao.UserDAO;
 import com.grandland.glits.ms.domain.User;
+import com.grandland.glits.ms.form.UserForm;
+import com.grandland.glits.ms.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -76,9 +78,9 @@ public class UserService {
         return save(user);
     }
 
-    public Page<User> queryUsers(Map seachParams, int page, int size) {
+    public Page<User> queryUsers(UserForm userForm, int page, int size) {
         PageRequest pageRequest = buildPageRequest(page, size, "id");
-        Specification<User> specification = buildSpecification(seachParams);
+        Specification<User> specification = buildSpecification(userForm);
         Page<User> result = userDAO.findAll(specification, pageRequest);
         return  result;
     }
@@ -87,22 +89,22 @@ public class UserService {
         return new PageRequest(page, size, new Sort(new Sort.Order(Sort.Direction.DESC,sortType)));
     }
 
-    private Specification<User> buildSpecification(final Map<String, Object> searchParams){
+    private Specification<User> buildSpecification(final UserForm userForm){
         return new Specification<User>() {
             @Override
             public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                List<Predicate> list = new ArrayList<Predicate>();
+                List<Predicate> list = new ArrayList<>();
                 Path<String> name = root.get("name");
                 Path<User.Role> role = root.get("role");
                 Path<Boolean> isEnable = root.get("isEnable");
-                if(searchParams.get("name") != null && !searchParams.get("name").equals("")){
-                    list.add(cb.equal(name, searchParams.get("name")));
+                if(!StringUtil.isEmpty(userForm.getName())){
+                    list.add(cb.equal(name, userForm.getName()));
                 }
-                if(searchParams.get("userRole") != null){
-                    list.add(cb.equal(role, searchParams.get("userRole")));
+                if(userForm.getUserRole() != null){
+                    list.add(cb.equal(role, userForm.getUserRole()));
                 }
-                if(searchParams.get("isEnable") != null){
-                    list.add(cb.equal(isEnable, searchParams.get("isEnable")));
+                if(userForm.getEnabled() != null){
+                    list.add(cb.equal(isEnable, userForm.getEnabled()));
                 }
                 Predicate[] p = new Predicate[list.size()];
                 return cb.and(list.toArray(p));

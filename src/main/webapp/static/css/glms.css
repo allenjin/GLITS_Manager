@@ -6862,20 +6862,17 @@ button.close {
 .dropdown-menu li a {
   line-height: 30px;
 }
-.btn-primary {
-  background-color: #474e7a;
-  border: #474e7a;
-}
 .form-query {
-  display: inline;
-  margin: 0 20px;
+  float: left;
 }
-.form-query select,
-.form-query input {
-  width: 150px;
+.gl-form-inline {
+  margin-bottom: 15px;
 }
-.query-container {
-  margin: 10px 10px;
+.gl-form-inline .form-group {
+  margin-left: 10px;
+}
+.gl-form-inline .form-group label {
+  color: #4c5d77;
 }
 .rack-panel {
   float: left;
@@ -6956,7 +6953,7 @@ body,
 }
 .main {
   position: relative;
-  padding: 30px 10px;
+  padding: 20px 10px;
   background-color: #fcfcfe;
   overflow: scroll;
   overflow-x: hidden;
@@ -6997,6 +6994,12 @@ body,
 .gl-table tbody tr:hover {
   background-color: #eef0ff;
 }
+.gl-table tfoot tr td {
+  vertical-align: middle;
+}
+.gl-table-toolbar {
+  padding: 5px 20px;
+}
 .gl-table-no-result {
   border: 1px solid #ddd;
   text-align: center;
@@ -7016,12 +7019,12 @@ body,
 .pagination-info {
   display: inline-block;
   position: relative;
-  top: -20px;
+  top: -15px;
   color: #777777;
   padding: 0 20px;
 }
 .gl-pagination {
-  margin: 10px 0;
+  margin: 5px 0;
 }
 .gl-pagination li.active a {
   background-color: #566198;
@@ -7050,6 +7053,10 @@ body,
   position: absolute;
   padding: 0 20px;
   right: 0;
+}
+.gl-breadcrumb {
+  margin: 0;
+  color: #4c5d77;
 }
 /*!
  * ui-dialog.css
