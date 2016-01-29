@@ -163,5 +163,42 @@ function displayAlert(content, type) {
     alert.fadeOut(3000, function () {
         alert.remove();
     });
+}
+/**
+ * 判定表单输入项是否为空
+ * @param input
+ * @returns {boolean}
+ */
+function checkInputNull(input) {
+    if (input.val() === "" || input.val() === null) {
+        input.parent('div').addClass('has-error');
+        var label = input.parent('div').find('label').text();
+        displayAlert(label + "不能为空", "danger");
+        return false;
+    }
+    return true;
 
+}
+
+function registerCheckTable(table) {
+    var opButtons = table.find('.gl-table-toolbar > button');
+    table.on('click', 'thead .gl-table-checkbox, tfoot .gl-table-checkbox', function (e) {
+        var checked = $(this).is(":checked");
+        table.find('input.gl-table-checkbox').prop("checked", checked);
+        toggleOpButton(checked);
+    });
+    table.find('tbody .gl-table-checkbox').change(function () {
+        var checked = false;
+        table.find('tbody .gl-table-checkbox').each(function () {
+            checked = checked || $(this).is(":checked");
+        });
+        toggleOpButton(checked);
+    });
+    function toggleOpButton(checked) {
+        if (checked) {
+            opButtons.removeAttr('disabled');
+        } else {
+            opButtons.attr('disabled', 'disabled');
+        }
+    }
 }

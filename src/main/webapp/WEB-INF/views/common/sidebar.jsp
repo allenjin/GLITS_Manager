@@ -39,6 +39,12 @@
                 </a>
             </li>
         </sec:authorize>
+        <li <c:if test="${menuItem eq 'self'}">class="active"</c:if>>
+            <a href="${ctx}/self/">
+                <span class="glyphicon glyphicon-user"></span>
+                个人中心
+            </a>
+        </li>
     </ul>
     <div class="copyright">
         <p>Copyright &copy; 2015 <br/>

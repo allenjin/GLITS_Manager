@@ -10,7 +10,7 @@
 
                 <ul class="user-panel-list pull-right">
                     <li>
-                        <a href="#">
+                        <a href="${ctx}/self/message">
                             <span class="glyphicon glyphicon-bell"></span>
                         </a>
                     </li>
@@ -21,8 +21,8 @@
                                 <sec:authentication property="principal.name"/>
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                <li><a href="${ctx}/sys/self/info">个人信息</a></li>
-                                <li><a href="${ctx}/sys/self/password">密码修改</a></li>
+                                <li><a href="${ctx}/self/info">个人信息</a></li>
+                                <li><a href="${ctx}/self/password">密码修改</a></li>
                             </ul>
                         </div>
 

@@ -26,6 +26,11 @@ public class OperationResult<T> {
         this.message = message;
     }
 
+    public OperationResult(boolean hasError, String message, T bean){
+        this(hasError,message);
+        this.bean = bean;
+    }
+
     public void setHasError(boolean hasError) {
         this.hasError = hasError;
     }

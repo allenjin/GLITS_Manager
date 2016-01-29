@@ -11,6 +11,11 @@
 <div class="container">
     <%@include file="../../common/sidebar.jsp" %>
     <div class="main">
+        <div class="operation-wrapper">
+            <a class="btn btn-custom btn-sm" href="${ctx}/settings/user/add">
+                <span class="glyphicon glyphicon-plus"></span>新建用户
+            </a>
+        </div>
         <%@include file="../tabs.jsp" %>
         <form action="/settings/users" method="get" class="form-inline gl-form-inline">
             <div class="form-group form-group-sm">
@@ -54,24 +59,27 @@
             </thead>
             <c:if test="${page.totalPages ne 0}">
                 <tbody>
-                <c:forEach var="user" items="${page.content}">
-                    <tr data-id="${user.id}">
-                        <td><input type="checkbox" class="gl-table-checkbox"></td>
-                        <td>${user.name }</td>
-                        <td>${user.tel }</td>
-                        <td>${user.mail }</td>
-                        <td>${user.role.name }</td>
-                        <td>${user.isEnable ? "可用" : "不可用"}</td>
-                        <td>
-                            <button class="btn btn-info btn-xs modifyBtn">
-                                <span class="glyphicon glyphicon-edit"></span>修改
-                            </button>
-                            <button class="btn btn-warning btn-xs resetBtn">
-                                <span class="glyphicon glyphicon-refresh"></span>重置
-                            </button>
-                        </td>
-                    </tr>
-                </c:forEach>
+                <form id="check-form" action="${ctx}/user/del" method="post">
+                    <c:forEach var="user" items="${page.content}" varStatus="status">
+                        <tr data-id="${user.id}">
+                            <td><input type="checkbox" name="ids" value="${user.id}"
+                                       class="gl-table-checkbox"></td>
+                            <td>${user.name }</td>
+                            <td>${user.tel }</td>
+                            <td>${user.mail }</td>
+                            <td>${user.role.name }</td>
+                            <td>${user.isEnable ? "可用" : "不可用"}</td>
+                            <td>
+                                <a class="btn btn-info btn-xs" href="${ctx}/settings/user/modify?id=${user.id}">
+                                    <span class="glyphicon glyphicon-edit"></span>修改
+                                </a>
+                                <button class="btn btn-warning btn-xs resetBtn">
+                                    <span class="glyphicon glyphicon-refresh"></span>重置
+                                </button>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </form>
                 </tbody>
                 <tfoot>
                 <tr>
@@ -79,7 +87,7 @@
                     <td colspan="6">
                         <div class="pull-left">
                             <div class="gl-table-toolbar">
-                                <button class="btn btn-default delBtn" disabled="disabled">删除
+                                <button class="btn btn-default" id="delBtn" disabled="disabled">删除
                                 </button>
                             </div>
                         </div>
@@ -125,8 +133,33 @@
 <%@include file="../../common/footer.jsp" %>
 <%@include file="../../common/script.jsp" %>
 <script>
+    <c:if test="${result != null}">
+    if ("${result.hasError}" == "false") {
+        displayAlert("${result.message}", "success");
+    } else {
+        displayAlert("${result.message}", "danger");
+    }
+    </c:if>
     (function init() {
+        registerCheckTable($('#data-table'));
+        $('#delBtn').click(function (e) {
+            e.preventDefault();
+            var d = dialog({
+                title: '提示',
+                content: '确定删除所选的用户?',
+                width: 350,
+                okValue: '确定',
+                ok: function () {
+                    $('#check-form').submit();
+                },
+                cancelValue: '取消',
+                cancel: function () {
+                }
+            });
+            d.show();
+        });
         $('#data-table').on('click', 'button.resetBtn', function (e) {
+            e.preventDefault();
             var trHolder = $(this).parents('tr');
             var userId = trHolder.attr('data-id');
             var d = dialog({
@@ -136,42 +169,12 @@
                 okValue: '确定',
                 ok: function () {
                     var data = "id=" + userId;
-                    var url = "${ctx}/sys/admin/yhlb/rspw";
+                    var url = "${ctx}/user/reset";
                     ajaxRequest(url, data, function (result) {
                         if (result.hasError) {
                             displayAlert(result.message, 'danger');
                         } else {
                             displayAlert(result.message, 'success');
-                        }
-                    }, function () {
-                    });
-                },
-                cancelValue: '取消',
-                cancel: function () {
-                }
-            });
-            d.show();
-        });
-
-        $('#data-table').on('click', 'button.delBtn', function (e) {
-            var trHolder = $(this).parents('tr');
-            var userId = trHolder.attr('data-id');
-
-            var d = dialog({
-                title: '提示',
-                content: '确定删除该用户?',
-                width: 350,
-                okValue: '确定',
-                ok: function () {
-                    var data = "id=" + userId;
-                    var url = "${ctx}/sys/admin/yhlb/delete";
-                    ajaxRequest(url, data, function (result) {
-
-                        if (result.hasError) {
-                            displayAlert(result.message, 'danger');
-                        } else {
-                            displayAlert(result.message, 'success');
-                            trHolder.remove();
                         }
                     }, function () {
                     });

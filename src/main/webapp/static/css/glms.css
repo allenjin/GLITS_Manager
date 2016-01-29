@@ -6954,7 +6954,7 @@ body,
 .main {
   position: relative;
   padding: 20px 10px;
-  background-color: #fcfcfe;
+  background-color: #fbfbfe;
   overflow: scroll;
   overflow-x: hidden;
 }
@@ -7055,8 +7055,17 @@ body,
   right: 0;
 }
 .gl-breadcrumb {
-  margin: 0;
-  color: #4c5d77;
+  border-left: 3px solid #878eb9;
+  border-radius: 0;
+  background-color: transparent;
+}
+.gl-breadcrumb li a {
+  color: #35bfe6;
+}
+.gl-box-wrapper {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 20px 5px;
 }
 /*!
  * ui-dialog.css

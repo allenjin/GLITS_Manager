@@ -1,6 +1,7 @@
 package com.grandland.glits.ms.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,17 +39,19 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public enum Role{
-        ROLE_ADMIN("管理员"),ROLE_USER("普通用户");
+    public enum Role {
+        ROLE_ADMIN("超级管理员"), ROLE_USER("普通用户");
         private String name;
-        Role(String name){
+
+        Role(String name) {
             this.name = name;
         }
-        public String getName(){
+
+        public String getName() {
             return name;
         }
     }
-
+    
     private String mail;
 
     private String tel;
@@ -59,8 +62,7 @@ public class User implements UserDetails {
 
     private boolean isEnable;
 
-    public Long
-    getId() {
+    public Long getId() {
         return id;
     }
 
@@ -76,9 +78,13 @@ public class User implements UserDetails {
         this.name = name;
     }
 
-    public Role getRole() { return role; }
+    public Role getRole() {
+        return role;
+    }
 
-    public void setRole(Role role) { this.role = role; }
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
     public String getPassword() {
         return password;
@@ -120,7 +126,7 @@ public class User implements UserDetails {
         this.lastLogin = lastLogin;
     }
 
-    public boolean getIsEnable(){
+    public boolean getIsEnable() {
         return isEnable;
     }
 
@@ -143,8 +149,8 @@ public class User implements UserDetails {
 
     //待完善
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities(){
-        List<GrantedAuthority> al = new ArrayList<GrantedAuthority>();
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> al = new ArrayList<>();
         al.add(new SimpleGrantedAuthority(getRole().name()));
         return al;
     }
@@ -181,7 +187,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof User){
+        if (obj instanceof User) {
             User oUser = (User) obj;
             return name.equals(oUser.getUsername());
         }

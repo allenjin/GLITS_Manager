@@ -1,7 +1,6 @@
 package com.grandland.glits.ms.controller;
 
 import com.grandland.glits.ms.config.SiteConfig;
-import com.grandland.glits.ms.exception.AlreadyExistException;
 import com.grandland.glits.ms.exception.FieldEmptyException;
 import com.grandland.glits.ms.json.OperationResult;
 import com.grandland.glits.ms.utils.MessageUtil;
@@ -65,13 +64,4 @@ public class GlControllerAdvice {
         return result;
     }
 
-    @ExceptionHandler({AlreadyExistException.class})
-    @ResponseBody
-    public OperationResult handleAlreadyExistException(AlreadyExistException al) {
-        OperationResult result = new OperationResult();
-        result.setHasError(true);
-        result.setMessage(al.getMessage());
-        LOG.error("AlreadyExistException: {}", al.getMessage(), al);
-        return result;
-    }
 }
