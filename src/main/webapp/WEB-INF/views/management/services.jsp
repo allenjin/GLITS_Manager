@@ -19,40 +19,48 @@
         <table class="table gl-table" id="data-table">
             <thead>
             <tr>
+                <th width="10"><input type="checkbox" class="gl-table-checkbox"></th>
                 <th>名称</th>
                 <th>服务名</th>
                 <th>描述</th>
                 <th>包含角色</th>
-                <th class="op-th">操作</th>
+                <th width="70">操作</th>
             </tr>
             </thead>
             <c:if test="${page.totalPages > 0}">
                 <tbody>
-                <c:forEach items="${page.content}" var="service">
-                    <tr data-id="${service.id}">
-                        <td>${service.displayName}</td>
-                        <td>${service.name}</td>
-                        <td>${service.description}</td>
-                        <td>
-                            <c:forEach items="${service.roles}" var="role" varStatus="status">
-                                ${role.displayName}
-                                <c:if test="${not status.last}">,</c:if>
-                            </c:forEach>
-                        </td>
-                        <td>
-                            <button class="btn btn-info btn-xs modify-btn">
-                                <span class="glyphicon glyphicon-edit"></span>修改
-                            </button>
-                            <button class="btn btn-danger btn-xs del-btn">
-                                <span class="glyphicon glyphicon-trash"></span>删除
-                            </button>
-                        </td>
-                    </tr>
-                </c:forEach>
+                <form id="check-form" action="${ctx}/service/del" method="post">
+                    <c:forEach items="${page.content}" var="service">
+                        <tr data-id="${service.id}">
+                            <td><input type="checkbox" name="ids" value="${service.id}"
+                                       class="gl-table-checkbox"></td>
+                            <td>${service.displayName}</td>
+                            <td>${service.name}</td>
+                            <td>${service.description}</td>
+                            <td>
+                                <c:forEach items="${service.roles}" var="role">
+                                    <a class="label label-success" href="${ctx}/management/role/modify?id=${role.id}">${role.displayName}</a>
+                                </c:forEach>
+                            </td>
+                            <td>
+                                <button class="btn btn-info btn-xs modify-btn">
+                                    <span class="glyphicon glyphicon-edit"></span>修改
+                                </button>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </form>
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="5">
+                    <td><input type="checkbox" class="gl-table-checkbox"></td>
+                    <td colspan="6">
+                        <div class="pull-left">
+                            <div class="gl-table-toolbar">
+                                <button class="btn btn-default" id="delBtn" disabled="disabled">删除
+                                </button>
+                            </div>
+                        </div>
                         <div class="pull-right">
                             <nav>
                                 <div class="pagination-info">
@@ -95,7 +103,26 @@
 <script type="text/javascript">
 
     (function init() {
+        registerCheckTable($('#data-table'));
+        $('#delBtn').click(function (e) {
+            e.preventDefault();
+            var d = dialog({
+                title: '提示',
+                content: '确定删除所选服务,同时会删除包含的角色?',
+                width: 350,
+                okValue: '确定',
+                ok: function () {
+                    $('#check-form').submit();
+                },
+                cancelValue: '取消',
+                cancel: function () {
+                }
+            });
+            d.show();
+        });
+
         $('#data-table').on('click', 'button.modify-btn', function (e) {
+            e.preventDefault();
             var trHolder = $(this).parents('tr');
             var d = dialog({
                 title: '修改服务',
@@ -118,9 +145,9 @@
             var sdName = '', sName = '', desc = '', id = 0;
             if (trHolder) {
                 id = trHolder.attr('data-id');
-                sdName = trHolder.find('td:eq(0)').text();
-                sName = trHolder.find('td:eq(1)').text();
-                desc = trHolder.find('td:eq(2)').text();
+                sdName = trHolder.find('td:eq(1)').text();
+                sName = trHolder.find('td:eq(2)').text();
+                desc = trHolder.find('td:eq(3)').text();
             }
             var _html = '<form class="form-horizontal">';
             if (id != 0) {
@@ -169,33 +196,6 @@
 
         });
 
-        $('#data-table').on('click', 'button.del-btn', function (e) {
-            var trHolder = $(this).parents('tr');
-            var rackId = trHolder.attr('data-id');
-            var d = dialog({
-                title: '提示',
-                content: '确定删除该服务,同时会删除其包含的角色?',
-                width: 350,
-                okValue: '确定',
-                ok: function () {
-                    var data = "id=" + rackId;
-                    var url = "${ctx}/service/del";
-                    ajaxRequest(url, data, function (result) {
-                        if (result.hasError) {
-                            displayAlert(result.message, 'danger');
-                        } else {
-                            displayAlert(result.message, 'success');
-                            trHolder.remove();
-                        }
-                    }, function () {
-                    });
-                },
-                cancelValue: '取消',
-                cancel: function () {
-                }
-            });
-            d.show();
-        });
     })();
 </script>
 </body>

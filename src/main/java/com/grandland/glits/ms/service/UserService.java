@@ -90,7 +90,7 @@ public class UserService {
         user.setTel(userForm.getTel());
         user.setMail(userForm.getMail());
         user.setRole(userForm.getUserRole());
-        user.setIsEnable(true);
+        user.setIsEnable(userForm.getEnabled());
         user.setAvatar(userForm.getAvatar());
         userDAO.save(user);
         return new OperationResult<>(false, message, user);

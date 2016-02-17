@@ -24,12 +24,23 @@
                            <c:if test="${isUpdated}">readonly="readonly"</c:if> name="name" value="${user.name}"/>
                 </div>
                 <div class="form-group">
-                    <label for="mail" class="col-sm-1 control-label">邮件</label>
+                    <label for="mail" class="col-sm-1 control-label">电子邮件</label>
                     <input type="email" id="mail" name="mail" value="${user.mail}"/>
                 </div>
                 <div class="form-group">
-                    <label for="tel" class="col-sm-1 control-label">电话</label>
+                    <label for="tel" class="col-sm-1 control-label">联系方式</label>
                     <input type="text" id="tel" name="tel" value="${user.tel}"/>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">状态</label>
+                    <label for="userEnableYes" class="radio-inline">
+                        <input type="radio" name="enabled" id="userEnableYes"
+                            <c:if test="${user.enabled}"> checked="checked"</c:if> value=true>可用
+                    </label>
+                    <label for="userEnableNo" class="radio-inline">
+                        <input type="radio" name="enabled" id="userEnableNo"
+                        <c:if test="${ not user.enabled}"> checked="checked"</c:if> value=false>禁用
+                    </label>
                 </div>
                 <div class="form-group">
                     <label for="user-role" class="col-sm-1 control-label">用户类型</label>

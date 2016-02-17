@@ -1,5 +1,7 @@
 package com.grandland.glits.ms.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -43,10 +45,8 @@ public class GlRole {
     @JoinColumn(name = "service_id", referencedColumnName = "id")
     private GlService service;
 
-    @ManyToMany(cascade = {CascadeType.ALL}, fetch= FetchType.LAZY)
-    @JoinTable(name = "gl_host_role",
-        joinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")},
-        inverseJoinColumns = {@JoinColumn(name = "host_id", referencedColumnName = "id")})
+    @JsonIgnore
+    @ManyToMany(mappedBy = "roles", cascade = {CascadeType.PERSIST}, fetch= FetchType.LAZY)
     private Set<GlHost> hosts;
 
     //通过进程类别来决定获取PID的方法

@@ -33,4 +33,6 @@ public class MessageUtil {
 
     public static final String ERROR_VIOLATION = "违反数据完整性,出现冲突";
 
+    public static final String ERROR_JSON_PROCESSING = "Json处理出错";
+
 }

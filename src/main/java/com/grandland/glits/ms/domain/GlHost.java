@@ -6,6 +6,7 @@ import com.grandland.glits.ms.store.HostHeartbeat;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -43,8 +44,11 @@ public class GlHost {
     private GlRack rack;    //所属机架
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "hosts", cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
-    private Set<GlRole> roles;
+    @ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @JoinTable(name = "gl_host_role",
+            joinColumns = {@JoinColumn(name = "host_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    private List<GlRole> roles;
 
     public GlHost() {
     }
@@ -118,11 +122,11 @@ public class GlHost {
         this.rack = rack;
     }
 
-    public Set<GlRole> getRoles() {
+    public List<GlRole> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set roles) {
+    public void setRoles(List roles) {
         this.roles = roles;
     }
 

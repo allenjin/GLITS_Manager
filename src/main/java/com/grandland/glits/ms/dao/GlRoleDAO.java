@@ -13,4 +13,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface GlRoleDAO extends JpaRepository<GlRole, Integer>{
+    GlRole findByName(String name);
 }

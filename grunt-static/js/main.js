@@ -202,3 +202,16 @@ function registerCheckTable(table) {
         }
     }
 }
+
+//common logger
+function glLogger(message, type) {
+    if (window.console) {
+        switch (type) {
+            case 'error':
+                window.console.error(message);
+                break;
+            default :
+                window.console.info(message);
+        }
+    }
+}

@@ -123,15 +123,35 @@
   border-left: 3px solid @glms-widget-bg;
   border-radius: 0;
   background-color: transparent;
-  li{
-    a{
+  li {
+    a {
       color: @glms-main-color;
     }
   }
 }
 
-.gl-box-wrapper{
+.gl-box-wrapper {
   background: #fff;
   border: 1px solid #ddd;
   padding: 20px 5px;
+}
+
+.label-list {
+  padding-top: 7px;
+  .label {
+    margin-right: 5px;
+    cursor: pointer;
+  }
+  input[type="checkbox"] {
+    display: none;
+  }
+}
+
+.gl-modal {
+  width: 400px;
+  .selector-result {
+    margin: 10px 0;
+    height: 300px;
+    overflow-y: scroll;
+  }
 }

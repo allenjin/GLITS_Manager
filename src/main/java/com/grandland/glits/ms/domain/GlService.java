@@ -29,7 +29,7 @@ public class GlService {
     private String description;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "service")
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
     private Set<GlRole> roles;
 
     @JsonIgnore

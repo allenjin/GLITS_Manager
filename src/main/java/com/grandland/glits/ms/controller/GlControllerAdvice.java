@@ -1,5 +1,6 @@
 package com.grandland.glits.ms.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.grandland.glits.ms.config.SiteConfig;
 import com.grandland.glits.ms.exception.FieldEmptyException;
 import com.grandland.glits.ms.json.OperationResult;
@@ -41,6 +42,16 @@ public class GlControllerAdvice {
         result.setHasError(true);
         result.setMessage(MessageUtil.ERROR_SQL);
         LOG.error("DataAccessException:{}", ex.getMessage(), ex);
+        return result;
+    }
+
+    @ExceptionHandler({JsonProcessingException.class})
+    @ResponseBody
+    public OperationResult handleJsonProcessingException(JsonProcessingException ex){
+        OperationResult result = new OperationResult();
+        result.setHasError(true);
+        result.setMessage(MessageUtil.ERROR_JSON_PROCESSING);
+        LOG.error("JsonProcessingException:{}", ex.getMessage(), ex);
         return result;
     }
 

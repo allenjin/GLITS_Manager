@@ -23,4 +23,12 @@ public class RackService {
     public List<GlRack> queryRacks() {
         return glRackDAO.findAll();
     }
+
+    public void deleteRacks(List<Integer> ids){
+        if(ids == null){
+            return;
+        }
+        List<GlRack> racks = glRackDAO.findAll(ids);
+        glRackDAO.delete(racks);
+    }
 }

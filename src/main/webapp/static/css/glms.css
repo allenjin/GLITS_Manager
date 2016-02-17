@@ -7067,6 +7067,24 @@ body,
   border: 1px solid #ddd;
   padding: 20px 5px;
 }
+.label-list {
+  padding-top: 7px;
+}
+.label-list .label {
+  margin-right: 5px;
+  cursor: pointer;
+}
+.label-list input[type="checkbox"] {
+  display: none;
+}
+.gl-modal {
+  width: 400px;
+}
+.gl-modal .selector-result {
+  margin: 10px 0;
+  height: 300px;
+  overflow-y: scroll;
+}
 /*!
  * ui-dialog.css
  * Date: 2014-07-03

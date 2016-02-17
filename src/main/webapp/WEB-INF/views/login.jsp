@@ -47,7 +47,6 @@
 <div class="container">
     <div class="header">
         <div class="logo-container">
-            <p>logo</p>
         </div>
     </div>
     <div class="login-form">

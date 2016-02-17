@@ -41,7 +41,7 @@ public class UserController {
     private UserDAO userDAO;
 
     @RequestMapping(value = "/del", method = RequestMethod.POST)
-    public String delUser(@RequestParam("ids") List<Long> ids, RedirectAttributes attributes) {
+    public String delUsers(@RequestParam("ids") List<Long> ids, RedirectAttributes attributes) {
         userService.deleteUsers(ids);
         attributes.addFlashAttribute("result", new OperationResult(false, MessageUtil.SUCCESS_DELETE));
         return "redirect:/settings/users";
