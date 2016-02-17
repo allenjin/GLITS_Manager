@@ -1,0 +1,5 @@
+;(function($){
+    $.CommonSelector = function(){
+
+    };
+})(jQuery);
